@@ -1,550 +1,271 @@
-<!DOCTYPE html>
+             <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tax Free Issuing Flow – Global Blue Styled Prototype</title>
+  <title>iOS Wheel Picker - Vanilla JS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-:root {
-  --gb-blue: #0a2856;
-  --gb-accent: #1868ae;
-  --gb-gray: #f7f7f9;
-  --gb-step-done: #89aae6;
-}
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  background: var(--gb-gray);
-  color: #212121;
-}
-header {
-  background: var(--gb-blue);
-  color: #fff;
-  text-align: center;
-  padding: 2rem 1rem 1rem 1rem;
-  letter-spacing: 1px;
-}
-header small { font-size: 0.95em; color: #c2d2e4; }
-
-#progress-steps {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  margin-top: 1.5rem;
-  margin-bottom: -0.8rem;
-  flex-wrap: wrap;
-  font-size: 0.91rem;
-}
-.progress-step {
-  display: flex;
-  align-items: center;
-  margin: 0 0.2rem;
-}
-.progress-circle {
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
-  background: #e5e5ec;
-  color: #21316d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  border: 2px solid #e5e5ec;
-  transition: background .17s, border-color .17s;
-}
-.active .progress-circle, .progress-step.active .progress-circle {
-  background: var(--gb-blue);
-  color: #fff;
-  border-color: var(--gb-accent);
-}
-.done .progress-circle {
-  background: var(--gb-step-done);
-  color: var(--gb-blue);
-  border-color: var(--gb-accent);
-}
-.progress-label {
-  margin-left: 0.25rem;
-  white-space: nowrap;
-}
-.progress-bar {
-  width: 22px;
-  height: 3px;
-  background: #e5e5e5;
-  margin: 0 0.1rem;
-  border-radius: 1.5px;
-}
-.progress-step.active ~ .progress-step .progress-bar {
-  background: #e5e5e5;
-}
-.progress-step.done .progress-bar {
-  background: var(--gb-step-done);
-}
-
-section {
-  display: none;
-  background: #fff;
-  margin: 2rem auto;
-  max-width: 480px;
-  border-radius: 16px;
-  box-shadow: 0 3px 24px rgba(10,40,86,0.10), 0 1.5px 6px rgba(10,40,86,0.05);
-  padding: 2rem 2rem 1.5rem;
-}
-section.active { display: block; }
-h2 {
-  color: var(--gb-blue);
-  margin-bottom: 1rem;
-  font-size: 1.22rem;
-  font-weight: 700;
-}
-p { line-height: 1.6; }
-.eligibility {
-  background: #f1f5f9;
-  border-radius: 12px;
-  color: #21316d;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.97rem;
-}
-.button-row {
-  display: flex;
-  gap: 1rem;
-  margin: 1.5rem 0 0;
-  flex-wrap: wrap;
-}
-.btn {
-  background: var(--gb-blue);
-  color: #fff;
-  border: none;
-  border-radius: 22px;
-  padding: 0.72rem 2.1rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  letter-spacing: 1px;
-  transition: background 0.2s;
-  box-shadow: 0 1.5px 6px rgba(10,40,86,0.08);
-}
-.btn:focus, .btn:hover { background: var(--gb-accent);}
-.btn.secondary {
-  background: #f1f5f9;
-  color: var(--gb-blue);
-  border: 1.2px solid #bcd2ee;
-}
-label {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: #21316d;
-  font-weight: 600;
-}
-input, select, textarea {
-  border: 1px solid #c2d2e4;
-  border-radius: 10px;
-  padding: 0.7rem;
-  font-size: 1rem;
-  margin-bottom: 1.07rem;
-  width: 100%;
-  background: var(--gb-gray);
-  color: var(--gb-blue);
-  box-sizing: border-box;
-}
-input[type="date"], input[type="time"] {
-  color: #0a2856;
-  font-size: 1.05rem;
-}
-.receipt-list {
-  background: #e9f1fc;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  padding: 1rem;
-}
-.receipt-list ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.receipt-list li {
-  padding: 0.7rem 0;
-  border-bottom: 1px solid #b2b2b2;
-  cursor: pointer;
-  color: #0a2856;
-  font-weight: 500;
-}
-.receipt-list li:last-child { border-bottom: none; }
-.terms {
-  margin: 1rem 0;
-  font-size: 0.96rem;
-  color: #21316d;
-  background: #f1f5f9;
-  padding: 1rem;
-  border-radius: 12px;
-}
-.info-video {
-  display: block;
-  font-size: 0.97rem;
-  color: #1372dc;
-  margin-bottom: 1rem;
-}
-.center { text-align: center; }
-.final {
-  color: var(--gb-blue);
-  font-size: 1.27rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 2rem 0;
-}
-.address-block input { margin-bottom: 0.5rem;}
-@media (max-width: 600px) {
-  #progress-steps {font-size:.78rem;}
-  section { padding: 0.8rem;}
-  .button-row { flex-direction: column; gap: 0.47rem;}
-}
-
-.language-picker-wheel {
-  width: 100%;
-  margin: 1.3rem 0 2.5rem 0;
-  background: #fff;
-  border-radius: 13px;
-  border: 1.5px solid #bcd2ee;
-  box-shadow: 0 1.5px 12px rgba(10,40,86,0.06);
-  height: 110px;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.language-picker-list {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  list-style: none;
-  text-align: center;
-}
-.language-picker-list li {
-  font-size: 1.19rem;
-  color: #0a2856;
-  padding: .2rem 0;
-  transition: color 0.18s, font-weight 0.18s;
-  cursor: pointer;
-  line-height: 2.1;
-}
-.language-picker-list .selected {
-  color: var(--gb-accent);
-  font-weight: bold;
-  font-size: 1.33rem;
-  background: #f2f8fb;
-  border-radius: 12px;
-  transition: color 0.18s, font-size 0.18s, background 0.17s;
-}
-.language-picker-wheel::before,
-.language-picker-wheel::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; z-index: 1;
-  height: 28px;
-  pointer-events: none;
-}
-.language-picker-wheel::before {
-  top: 0; 
-  background: linear-gradient(to bottom, #fff 60%, #fff0 .99);
-}
-.language-picker-wheel::after {
-  bottom: 0;
-  background: linear-gradient(to top, #fff 60%, #fff0 .99);
-}
+    html,body { background: #ececec; }
+    body { font-family: 'SF Pro Display', Arial, sans-serif; }
+    .container { max-width: 400px; margin: 60px auto; padding: 22px 18px; background: #fff; border-radius: 18px; box-shadow: 0 6px 32px #0054A644; }
+    .header { background: #555a62; color: #fff; font-size: 2rem; font-weight: 700; letter-spacing: .02em; padding: 24px; border-radius: 18px 18px 0 0; margin: -22px -18px 24px -18px; }
+    .picker-label { font-weight: 600; color: #0054A6; margin: 14px 0 14px 1px;}
+    .picker-input {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1.5px solid #B0C6E8;
+      font-size: 1.2em;
+      background: #f4f6f9;
+      cursor: pointer;
+      text-align: left;
+      user-select: none;
+    }
+    .modal-bg {
+      background: rgba(0,0,0,0.24);
+      position: fixed; inset: 0; z-index: 99;
+    }
+    .picker-modal {
+      position: fixed;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 100;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,80,165,0.24);
+      width: 350px;
+      max-width: 98vw;
+      padding: 0 0 16px 0;
+      display: flex; flex-direction: column; align-items: stretch;
+      animation: pickerpop .19s;
+    }
+    @keyframes pickerpop { 0%{opacity:.0;transform:scale(0.96) translate(-52%,-52%);} 100%{opacity:1;transform:scale(1) translate(-50%,-50%);} }
+    .picker-wheel-wrap {
+      flex:1 1 auto;
+      height: 248px;
+      overflow: hidden;
+      position: relative;
+      margin-top:0;
+    }
+    .picker-wheel {
+      height: 100%;
+      overflow-y: scroll;
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+    }
+    .picker-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      min-height: 100%;
+    }
+    .picker-item {
+      height: 48px;
+      line-height: 48px;
+      font-size: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      color: #174699;
+      border-radius: 10px;
+      user-select: none;
+      transition: background .16s, color .16s;
+      margin: 0 18px;
+    }
+    .picker-item.selected {
+      background: #0054A6;
+      color: #fff;
+      font-weight: bold;
+    }
+    .picker-highlight {
+      position: absolute;
+      left: 0; right: 0;
+      top: 100px;
+      height: 48px;
+      border-radius: 12px;
+      pointer-events: none;
+      border: 2px solid #0054A6;
+      box-sizing: border-box;
+      background: rgba(0,84,166, 0.06);
+      z-index: 9;
+    }
+    .picker-actions {
+      padding: 18px 28px 0 28px;
+      display: flex; justify-content: flex-end; align-items: center;
+    }
+    .picker-close {
+      font-size: 1.09rem;
+      background: #555a62;
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      padding: 9px 28px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-left: 4px;
+      transition: background .2s;
+    }
+    .picker-close:hover { background: #003366; }
+    @media (max-width:430px) { .picker-modal { width:99vw;} }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Tax Free Transaction Issuing Flow</h1>
-    <small>Global Blue Kiosk Prototype</small>
-  </header>
-  <div id="progress-steps"></div>
-
-<!-- LANGUAGE SELECTOR - BARREL/WHEEL STYLE (Step 1) -->
-<section id="step1" class="active">
-  <h2>Step 1: Choose Your Language</h2>
-  <div style="padding-bottom:0.7rem;">Select your preferred language to begin:</div>
-  <div class="language-picker-wheel" id="langpicker">
-    <ul class="language-picker-list" id="langlist">
-      <li class="selected">English</li>
-      <li>Français</li>
-      <li>Deutsch</li>
-      <li>Español</li>
-      <li>Italiano</li>
-      <li>简体中文</li>
-      <li>日本語</li>
-      <li>한국어</li>
-    </ul>
-  </div>
-  <div class="button-row center">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- ELIGIBILITY AND DOCUMENTS -->
-<section id="step2">
-  <h2>Step 2: Eligibility & Required Documents</h2>
-  <div class="eligibility">
-    <strong>Please ensure you have these documents:</strong><br>
-    • Passport or ID<br>
-    • Sales receipts<br>
-    • Credit card or eWallet<br><br>
-    <strong>Eligibility:</strong><br>
-    • You must be 16 years old or older<br>
-    • You must NOT be a European Union resident<br>
-    • You must get Customs validation within 3 months + the month of issuing
-  </div>
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- PASSPORT SCAN -->
-<section id="step3">
-  <h2>Step 3: Scan Your Passport/ID</h2>
-  <div class="info-video">[Instruction Video: How to scan your passport]</div>
-  <label for="passportInput">Passport / ID Number</label>
-  <input type="text" id="passportInput" name="passport" placeholder="Enter or scan passport/ID">
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- PERSONAL INFORMATION -->
-<section id="step4">
-  <h2>Step 4: Enter Traveler Information</h2>
-  <label for="fullName">Full Name</label>
-  <input type="text" id="fullName" name="fullName" placeholder="e.g. John Doe">
-  <label for="address">Address</label>
-  <input type="text" id="address" name="address" placeholder="Your address">
-  <label for="passportNum">Passport/ID No.</label>
-  <input type="text" id="passportNum" name="passportNum" placeholder="Your passport or ID number">
-  <label for="email">Email Address</label>
-  <input type="email" id="email" name="email" placeholder="Enter your email">
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- RESIDENCE & DEPARTURE -->
-<section id="step5">
-  <h2>Step 5: Residence & Departure</h2>
-  <label for="residenceCountry">Country of Residence</label>
-  <input type="text" id="residenceCountry" name="residenceCountry" placeholder="Country of residence">
-  <label for="departureDate">Departure Date</label>
-  <input type="date" id="departureDate" name="departureDate">
-  <div style="font-size:0.97rem;margin-bottom:1rem;">Please confirm your country of residence. It may differ from your passport country. Enter your departure date for early refund eligibility.</div>
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- MEMBERSHIP OPT-IN -->
-<section id="step6">
-  <h2>Step 6: Become a Global Blue Member</h2>
-  <label for="emailMembership">Email Address</label>
-  <input type="email" id="emailMembership" name="emailMembership" placeholder="Enter your email">
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Accept</button>
-    <button class="btn secondary" onclick="nextStep()">Skip</button>
-  </div>
-  <small>If email was previously entered, it's auto-populated. Please review and confirm.</small>
-</section>
-
-<!-- SALES RECEIPTS LINK -->
-<section id="step7">
-  <h2>Step 7: Link Sales Receipts</h2>
-  <div class="receipt-list">
-    <strong>Linked Receipts:</strong>
-    <ul>
-      <li onclick="alert('Receipt #001123\nShop: PRINTEMPS\nAmount: €250\nGoods:\n- Dress x1\n- Bag x1\n\nDate: 2026-02-05')">
-        Receipt #001123 (PRINTEMPS, €250) 
-        <span style="color:#1372dc">(details...)</span>
-      </li>
-    </ul>
-  </div>
-  <div class="info-video">[Instruction Video: How to scan your sales receipt]</div>
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- REFUND METHOD -->
-<section id="step8">
-  <h2>Step 8: Refund Method</h2>
-  <p>Please select your refund method:</p>
-  <div class="button-row center">
-    <button class="btn" onclick="showRefundInstructions('credit')">Credit Card</button>
-    <button class="btn" onclick="showRefundInstructions('wallet')">Digital Wallet</button>
-    <button class="btn" onclick="showRefundInstructions('cash')">Cash</button>
-  </div>
-</section>
-
-<!-- REFUND INSTRUCTIONS -->
-<section id="step9">
-  <h2>Step 9: Refund Instructions</h2>
-  <div class="info-video" id="refund-info">
-    [Instructions for refund method will appear here.]
-  </div>
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Next</button>
-  </div>
-</section>
-
-<!-- SUMMARY & TERMS -->
-<section id="step10">
-  <h2>Step 10: Review & Declaration</h2>
-  <div class="terms">
-    Please review your information.<br>
-    <a href="#">Terms & Conditions</a> | <a href="#">Traveler Declaration Text</a>
-  </div>
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Accept & Continue</button>
-  </div>
-</section>
-
-<!-- SHOP ASSISTANT APPROVAL -->
-<section id="step11">
-  <h2>Step 11: Shop Assistant Approval</h2>
-  <p>If inconsistencies are detected, assistance is required. Shop assistant scans QR code below to continue.</p>
-  <div class="center" style="margin:20px 0;">
-    <div style="display:inline-block;width:80px;height:80px;background:#eee;border:3px solid #bcd2ee;border-radius:8px;text-align:center;line-height:80px;">
-      <span style="color:#aaa;">[QR]</span>
-    </div>
-  </div>
-  <div class="button-row center">
-    <button class="btn" onclick="nextStep()">Approve</button>
-    <button class="btn secondary" onclick="restart()">Reject</button>
-  </div>
-  <small>Shop assistant scans personal QR code to login for approval.</small>
-</section>
-
-<!-- TAX FREE FORM PRINTOUT -->
-<section id="step12">
-  <h2>Step 12: Tax Free Form</h2>
-  <div class="info-video">[Instruction: Collect your Tax Free Form printout]</div>
-  <div class="button-row">
-    <button class="btn" onclick="nextStep()">Finish</button>
-  </div>
-</section>
-
-<!-- CUSTOMS REMINDER -->
-<section id="step13">
-  <h2>Step 13: Customs Validation Reminder</h2>
-  <div class="final">
-    Don't forget to validate your Tax Free Form at Customs.<br>
-    <span>Enjoy the journey!</span>
-  </div>
-</section>
-
+<div class="container">
+  <div class="header">Local Grey</div>
+  <label class="picker-label">Select your language</label>
+  <div id="langPickerInput" class="picker-input" tabindex="0">English</div>
+</div>
+<div id="modalBg" class="modal-bg" style="display:none"></div>
 <script>
-// Stepper progress
-const STEPS = [
-  {label:"Lang", short:"Language"},
-  {label:"Docs", short:"Eligibility"},
-  {label:"Scan", short:"Passport Scan"},
-  {label:"Info", short:"Your Info"},
-  {label:"Res.", short:"Residence"},
-  {label:"Memb.", short:"Membership"},
-  {label:"Receipts", short:"Receipts"},
-  {label:"Refund", short:"Refund"},
-  {label:"Instr.", short:"Instructions"},
-  {label:"Summary", short:"Summary"},
-  {label:"Assist", short:"Approval"},
-  {label:"Print", short:"Print Form"},
-  {label:"Customs", short:"Customs"}
+const languages = [
+  "English", "Mandarin", "Hindi", "Spanish", "French",
+  "Arabic", "Bengali", "Russian", "Portuguese", "Urdu",
+  "Indonesian", "German", "Japanese", "Swahili", "Marathi",
+  "Telugu", "Turkish", "Korean", "Vietnamese", "Italian"
 ];
-let currStep = 0;
+let selectedIdx = 0;
 
-function updateStepper(idx) {
-  const $p = document.getElementById('progress-steps');
-  let html = '';
-  for(let i=0; i<STEPS.length; ++i) {
-    let cls = 'progress-step';
-    if(i === idx) cls += ' active';
-    if(i < idx) cls += ' done';
-    html += `<div class="${cls}"><div class="progress-circle">${i+1}</div>
-    <div class="progress-label">${STEPS[i].label}</div>`;
-    if (i < STEPS.length-1) html += `<div class="progress-bar"></div>`;
-    html += `</div>`;
+const langPickerInput = document.getElementById('langPickerInput');
+const modalBg = document.getElementById('modalBg');
+
+function showPicker() {
+  modalBg.style.display="block";
+  const modal = document.createElement('div');
+  modal.className = "picker-modal";
+  modal.innerHTML = `
+    <div class="picker-wheel-wrap">
+      <div class="picker-highlight"></div>
+      <div class="picker-wheel">
+        <ul class="picker-list">
+          ${languages.map((lang, i) =>
+            `<li class="picker-item${i===selectedIdx?' selected':''}" tabindex="0" data-idx="${i}">${lang}</li>`
+          ).join('')}
+        </ul>
+      </div>
+    </div>
+    <div class="picker-actions">
+      <button class="picker-close">Close</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const list = modal.querySelector('.picker-list');
+  const items = modal.querySelectorAll('.picker-item');
+  const wheel = modal.querySelector('.picker-wheel');
+  // Constants
+  const itemHeight = 48;
+  const visibleCount = 5; // 2 above,1 selected,2 below
+
+  // Scroll to initial selected
+  setTimeout(() => {
+    wheel.scrollTop = (selectedIdx)*itemHeight;
+    updateHighlight();
+  },35);
+
+  // Helper: highlight
+  function updateHighlight(focus, snap) {
+    let offset = Math.round(wheel.scrollTop / itemHeight);
+    if (offset<0) offset=0;
+    if (offset>languages.length-1) offset=languages.length-1;
+    items.forEach((it,i)=> it.classList.toggle('selected', i===offset));
+    if(typeof snap==="undefined"||snap){
+      wheel.scrollTo({top: offset*itemHeight, behavior:'smooth'});
+    }
+    if(typeof focus!=='undefined' && focus) items[offset].focus();
   }
-  $p.innerHTML = html;
-}
-function showStep(idx) {
-  // Hide all
-  for(const step of STEPS.map((s, i)=>document.getElementById('step'+(i+1))))
-    if(step) step.classList.remove('active');
-  // Show current
-  const now = document.getElementById('step'+(idx+1));
-  if(now) now.classList.add('active');
-  updateStepper(idx);
-  currStep = idx;
-}
-function nextStep() {
-  if (currStep < STEPS.length-1) showStep(currStep+1);
-}
-function restart() { showStep(0);}
-function showRefundInstructions(method) {
-  showStep(8);
-  let el = document.getElementById("refund-info");
-  if(method==='credit') el.textContent = "Instructions for Credit Card refund: please insert or scan your card.";
-  else if(method==='wallet') el.textContent = "Instructions for Alipay/Digital Wallet refund: present your wallet QR code.";
-  else if(method==='cash') el.textContent = "Instructions for Cash refund: collect your refund at the counter.";
-}
-// Apple-style wheel language picker
-const langs = ["English","Français","Deutsch","Español","Italiano","简体中文","日本語","한국어"];
-let langSelected = 0;
-const renderWheel = ()=>{
-  let ul = document.getElementById("langlist");
-  ul.innerHTML = langs.map((l,i)=>
-    `<li class="${i===langSelected?'selected':''}" onclick="setLang(${i})">${l}</li>`
-  ).join('');
-  ul.scrollTo({
-    top: Math.max(0,(langSelected-2)*38),
-    behavior: 'smooth'
+
+  // Scroll snap logic (like iOS)
+  let isTouching = false, lastTouchY = null, lastTouchTime=null, vel=0, momentumFrame=null;
+  wheel.addEventListener('touchstart', (e)=>{
+    isTouching = true; vel = 0; if(momentumFrame) cancelAnimationFrame(momentumFrame);
+    lastTouchY = e.touches[0].clientY; lastTouchTime=Date.now();
   });
-};
-function setLang(i) {
-  langSelected = i;
-  renderWheel();
-}
-document.addEventListener("DOMContentLoaded", ()=>{
-  renderWheel();
-  showStep(0);
-  // Language wheel: drag/scroll events for native feel
-  let dragging = false, startY=0, lastY=0, lastSelected=0;
-  const ul = document.getElementById("langlist");
-  ul.addEventListener('mousedown', (e)=>{
-    dragging = true; startY = e.clientY; lastY = startY; lastSelected = langSelected;
-    e.preventDefault();
+  wheel.addEventListener('touchmove', (e)=>{
+    let y = e.touches[0].clientY;
+    let dy = y - lastTouchY;
+    let dt = Date.now()-lastTouchTime;
+    vel = dy/dt*16; // Velocity in px/ms normalized to 60Hz
+    lastTouchY = y; lastTouchTime=Date.now();
   });
-  ul.addEventListener('touchstart', (e)=>{
-    dragging = true; startY = e.touches[0].clientY; lastY = startY; lastSelected = langSelected;
+  wheel.addEventListener('touchend', ()=>{
+    isTouching = false;
+    // Momentum
+    let spd = vel*16; // px per frame
+    function momentum() {
+      if(Math.abs(spd)>2) {
+        wheel.scrollTop -= spd;
+        spd *= 0.94;
+        momentumFrame = requestAnimationFrame(momentum);
+        updateHighlight();
+      } else {
+        // Snap to item
+        let idx = Math.round(wheel.scrollTop/itemHeight);
+        wheel.scrollTo({top: idx*itemHeight, behavior:'smooth'});
+        updateHighlight(true);
+      }
+    }
+    momentum();
   });
-  document.addEventListener('mousemove', (e)=>{
-    if(!dragging) return;
-    let dy = e.clientY - lastY;
-    if(Math.abs(dy) > 18) {
-      let dir = dy < 0 ? 1 : -1;
-      langSelected = Math.min(langs.length-1, Math.max(0, langSelected+dir));
-      renderWheel(); lastY = e.clientY;
+  // Mouse wheel: smooth snap
+  let wheelTimeout=null;
+  wheel.addEventListener('wheel', e=>{
+    if(wheelTimeout) clearTimeout(wheelTimeout);
+    wheelTimeout = setTimeout(()=>{
+      let idx = Math.round(wheel.scrollTop/itemHeight);
+      wheel.scrollTo({top: idx*itemHeight, behavior:'smooth'});
+      updateHighlight(true);
+    },80);
+    setTimeout(updateHighlight,18);
+  });
+
+  // Keyboard nav
+  modal.addEventListener('keydown', (e)=>{
+    let idx = Array.from(items).findIndex(it=>it.classList.contains('selected'));
+    if(e.key==='ArrowDown'||e.key==='Down'){if(idx<languages.length-1){ idx++; scrollToIdx(idx);} e.preventDefault();}
+    else if(e.key==='ArrowUp'||e.key==='Up'){if(idx>0){ idx--; scrollToIdx(idx);} e.preventDefault();}
+    else if(e.key==='Enter'||e.key==='" '||e.key===" "){ selectIdx(idx); }
+    else if(e.key==='Escape'){closePicker();}
+  });
+
+  // Click item selection
+  list.addEventListener('click', e=>{
+    if(e.target.classList.contains('picker-item')) {
+      let idx = Number(e.target.dataset.idx);
+      selectIdx(idx);
     }
   });
-  document.addEventListener('touchmove', (e)=>{
-    if(!dragging) return;
-    let dy = e.touches[0].clientY - lastY;
-    if(Math.abs(dy) > 18) {
-      let dir = dy < 0 ? 1 : -1;
-      langSelected = Math.min(langs.length-1, Math.max(0, langSelected+dir));
-      renderWheel(); lastY = e.touches[0].clientY;
-    }
+  // Snap and highlight on scroll
+  wheel.addEventListener('scroll', ()=>{
+    if(isTouching) return;
+    updateHighlight();
   });
-  document.addEventListener('mouseup', ()=>dragging=false);
-  document.addEventListener('touchend', ()=>dragging=false);
-});
+  // Snap on scroll end (fallback)
+  let lastScroll=-1000;
+  wheel.addEventListener('scroll', ()=>{
+    lastScroll=Date.now();
+    setTimeout(()=>{if(Date.now()-lastScroll>85){updateHighlight(true);}},90);
+  });
+
+  // Helper fns
+  function scrollToIdx(idx) {
+    wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});
+    updateHighlight(true);
+  }
+  function selectIdx(idx) {
+    selectedIdx=idx;
+    langPickerInput.textContent=languages[idx];
+    closePicker();
+  }
+  // Close logic
+  function closePicker() {
+    document.body.removeChild(modal);
+    modalBg.style.display="none";
+    langPickerInput.focus();
+  }
+  // Close btn & bg
+  modal.querySelector('.picker-close').onclick=closePicker;
+  modalBg.onclick=closePicker;
+}
+langPickerInput.onclick = showPicker;
+langPickerInput.onkeydown = (e)=>{ if(e.key==='Enter'||e.key===' ') showPicker(); }
 </script>
 </body>
 </html>
