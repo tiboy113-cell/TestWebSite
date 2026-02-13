@@ -2,121 +2,160 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Local Grey Kiosk (Responsive, QR, Receipts Limited)</title>
+  <title>Local Grey Kiosk (Blue BG, Modern, QR, Stepper, Cards)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    html, body { background: #eaf0fa; min-height: 100vh; margin:0; }
-    body { font-family: "SF Pro Display", Arial, sans-serif; color: #222; margin: 0; }
+    :root {
+      --blue: #035CB1;
+      --header-grey: #5A5D64;
+      --header-radius: 36px;
+      --card-radius: 28px;
+    }
+    html, body {
+      background: var(--blue) !important;
+      min-height: 100vh;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "SF Pro Display", Arial, sans-serif;
+      color: #222a32;
+    }
     .responsive-outer {
-      min-height: 100vh; padding: 10px;
-      display: flex; justify-content: center; align-items: flex-start;
-      background: #eaf0fa;
+      min-height: 100vh;
+      padding: 28px 10px 10px 10px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: var(--blue);
     }
     .app-container {
-      max-width: 928px; width:100%;
-      border-radius: 28px;
+      width: 100%;
+      max-width: 940px;
       background: #fff;
-      box-shadow: 0 8px 36px #0054a655, 0 1.5px 4px #555a6211;
-      padding: 0;
+      border-radius: var(--header-radius);
+      box-shadow: 0 6px 36px #0033662a, 0 1.5px 4px #555a6211;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .app-header {
-      background: #555A62;
-      color: white;
-      padding: 38px 0 32px 0;
+      background: var(--header-grey);
+      color: #fff;
+      padding: 36px 0 28px 0;
       text-align: center;
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       font-weight: bold;
       letter-spacing: .02em;
-      border-radius: 28px 28px 0 0;
+      border-radius: var(--header-radius) var(--header-radius) 0 0;
     }
-    /* Card/content look */
     .screen {
-      width: 100%; min-height: 450px;
-      background: #fff; border-radius: 0 0 28px 28px;
+      width: 100%;
+      background: #fff;
+      border-radius: 0 0 var(--header-radius) var(--header-radius);
       box-sizing: border-box;
-      padding: 42px 34px 28px 34px;
+      padding: 42px 38px 38px 38px;
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4em;
+    }
+    h2 {
+      margin: 0 0 28px 0;
+      font-size: 2rem;
+      color: var(--blue);
+      font-weight: 700;
     }
     .card {
       background: #e6f0fa;
-      border-radius: 17px;
-      padding: 18px 19px 15px 20px;
+      border-radius: var(--card-radius);
+      padding: 19px 21px 17px 21px;
       margin: 0 0 30px 0;
-      font-size: 1.1rem;
+      font-size: 1.13rem;
       box-shadow: 0 2px 11px #0054a613;
-    }
-    h2 {
-      margin: 0 0 26px 0; font-size: 2rem; color: #0054A6; font-weight: 700;
     }
     ul { padding-left: 27px; margin: 0 0 12px 0;}
     .elig { font-weight: bold; margin-top:10px; margin-bottom: 5px; }
-    label { font-weight: 600; color: #154274; margin-top:1.3em; margin-bottom:.5em; display: block;}
-    .input-row {margin-bottom:18px;}
-    .input-label {margin-bottom: 7px; font-weight: 700; color: #0054A6; display:block;}
+    label { font-weight: 600; color: #033c73; margin-top:1.3em; margin-bottom:.53em; display: block;}
+    .input-row {margin-bottom:21px;}
+    .input-label {margin-bottom: 9px; font-weight: 700; color: var(--blue); display:block;}
     input, select, textarea, .picker-input {
       width: 100%; min-width:0; box-sizing: border-box;
-      padding: 18px;
-      font-size: 1.19rem;
-      border: 1.5px solid #cbcfd6;
-      border-radius: 15px; margin-bottom: 6px;
+      padding: 20px;
+      font-size: 1.15rem;
+      border: 1.5px solid #b8c7d8;
+      border-radius: 16px; margin-bottom: 7px;
       transition: border .14s;
+      background: #f7f7f7;
     }
-    input:focus, select:focus, textarea:focus, .picker-input:focus { border-color: #0054A6; background: #e6f0fa;}
+    input:focus, select:focus, textarea:focus { border-color: var(--blue); background: #e6f0fa;}
     textarea {min-height: 74px;}
     .btn-primary, .btn-secondary {
       display: block; width: 100%; border: none;
       border-radius: 21px;
-      padding: 20px 0;
-      font-size: 1.25rem; font-weight: 800; box-shadow: 0 2px 8px #0054a61A;
-      transition: background .14s;
-      margin-top: 40px;
+      padding: 22px 0;
+      font-size: 1.35rem; font-weight: 800; letter-spacing:0.02em; box-shadow: 0 2px 8px #003a7010;
+      transition: background .15s, box-shadow .15s;
+      margin-top: 42px;
     }
     .btn-primary {
-      background: #0054A6; color: #fff; margin-bottom: 16px;
-      letter-spacing: 0.01em;
+      background: var(--blue);
+      color: #fff;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 28px #003b7b19;
     }
     .btn-primary:active { background: #003366; }
     .btn-secondary {
-      background:#fff; color: #0054A6; border: 2px solid #0054A6;
-      box-shadow: none; margin-top: 0; margin-bottom: 6px;
+      background:#fff;
+      color: var(--blue);
+      border: 2px solid var(--blue);
+      box-shadow: none;
+      margin-top: 0;
+      margin-bottom: 13px;
     }
     /* receipts */
     .receipt-list {
-      background: #f4f6f9; border-radius: 16px; padding: 11px 7px 7px 7px; margin-bottom: 13px;
+      background: #f4f6f9;
+      border-radius: 22px;
+      padding: 14px 10px 8px 10px;
+      margin-bottom: 17px;
     }
     .receipt {
-      background: #fff; border-radius: 13px; box-shadow: 0 1px 6px #0054A622;
-      padding: 12px 17px; margin-bottom: 9px; display:flex;justify-content:space-between; align-items:center;font-size:1.09rem;
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 1px 6px #0054A622;
+      padding: 13px 18px;
+      margin-bottom: 13px;
+      display:flex;justify-content:space-between; align-items:center;font-size:1.09rem;
     }
     .show-more-receipts { 
-      color:#0054A6; background:transparent; border:none; font-weight:600; font-size:1.07rem;
-      text-align:left; margin:9px 0 0 0; cursor:pointer; width:100%; padding:6px 0 14px 4px;
+      color:var(--blue); background:transparent; border:none; font-weight:600; font-size:1.13rem;
+      text-align:left; margin:10px 0 0 0; cursor:pointer; width:100%; padding:8px 0 17px 7px;
     }
     /* Modal overlays - always on top */
     .modal-bg,.overlay {background:rgba(0,50,140,.13);position:fixed;top:0;left:0;right:0;bottom:0;z-index: 10010;}
     .popup,.modal,.picker-modal,.qr-modal,.date-modal {
       position:fixed;z-index:10020;left:50%;top:50%;transform:translate(-50%,-50%);
       background:#fff;border-radius:18px;box-shadow:0 6px 38px #0054A661;
-      padding:30px 28px 30px 28px;max-width:99vw;min-width:330px;
-      display:flex;flex-direction:column;align-items:stretch;
+      padding:33px 32px 29px 32px;max-width:99vw;min-width:335px;
       min-height:120px;
     }
-    .popup h3, .modal h3 {margin-top:0;}
     #reader>video, .qr-modal video { border-radius: 14px !important;}
-    .qr-close {background:#0054A6;color:#fff;border:none;border-radius:9px;font-size:1.21em;font-weight:700;padding:11px 37px;margin-top:18px;cursor:pointer;margin-bottom:0;}
+    .qr-close {background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:1.21em;font-weight:700;padding:11px 37px;margin-top:18px;cursor:pointer;margin-bottom:0;}
     .qr-close:hover {background:#003366;}
     @media (min-width:1000px){
-      .app-container{max-width: 928px;}
-      .screen {padding:48px 110px 32px 110px;}
-      .card {margin:0 0 36px 0;}
+      .app-container{max-width:928px;}
+      .screen {padding:54px 135px 36px 135px;}
+      .card {margin:0 0 38px 0;}
     }
     @media (max-width:700px) {
       .responsive-outer, .app-container, .screen,.popup,.modal { border-radius:0; }
       .responsive-outer{padding:0;}
       .app-header{border-radius:0;}
-      .card,.receipt-list{padding-left:5px;padding-right:5px;}
-      .screen{padding:14px 0 7px 0;}
-      .btn-primary, .btn-secondary { padding: 18px 0; margin-top:33px;}
+      .card,.receipt-list{padding-left:6px;padding-right:6px;}
+      .screen{padding:14px 0 12px 0;}
+      .btn-primary, .btn-secondary { padding: 18px 0; margin-top:29px;}
     }
   </style>
 </head>
