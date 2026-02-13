@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Local Grey Kiosk (Blue BG, Modern, QR, Stepper, Cards)</title>
+  <title>Local Grey Kiosk (Blue BG, Responsive, QR, Modern)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -89,7 +89,7 @@
       transition: border .14s;
       background: #f7f7f7;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--blue); background: #e6f0fa;}
+    input:focus, select:focus, textarea:focus, .picker-input:focus { border-color: var(--blue); background: #e6f0fa;}
     textarea {min-height: 74px;}
     .btn-primary, .btn-secondary {
       display: block; width: 100%; border: none;
@@ -113,6 +113,17 @@
       box-shadow: none;
       margin-top: 0;
       margin-bottom: 13px;
+    }
+    /* Video: always fills screen width as next button! */
+    .screen video {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-width: 0;
+      margin: 0 0 22px 0;
+      border-radius: 16px;
+      box-sizing: border-box;
+      background: #f4f6f9;
     }
     /* receipts */
     .receipt-list {
@@ -145,7 +156,7 @@
     .qr-close {background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:1.21em;font-weight:700;padding:11px 37px;margin-top:18px;cursor:pointer;margin-bottom:0;}
     .qr-close:hover {background:#003366;}
     @media (min-width:1000px){
-      .app-container{max-width:928px;}
+      .app-container{max-width: 928px;}
       .screen {padding:54px 135px 36px 135px;}
       .card {margin:0 0 38px 0;}
     }
@@ -337,7 +348,7 @@ function render() {
   } else if(state.step===2){
     html=`<div class="screen">
       <h2>Passport/ID Scanning</h2>
-      <video controls poster="https://dummyimage.com/600x200/cccccc/222222&text=Passport+Scan">
+      <video controls autoplay playsinline muted poster="https://dummyimage.com/890x250/cccccc/222222&text=Passport+Scan">
         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
       </video>
       <div class="input-row" style="margin-top:18px;">
@@ -365,7 +376,7 @@ function render() {
           <span id="dateVal" style="font-weight:bold;color:#2a4873;">
             ${state.residence.departure ? state.residence.departure : "Select departure date"}
           </span>
-          <span aria-label="expand" style="font-size:1.5em;color:#255ba8;">&#128197;</span>
+          <span aria-label="expand" style="font-size:1.6em;color:#255ba8;">&#128197;</span>
         </button>
       </div>
       <button class="btn-primary" id="residenceNextBtn">Next</button>
@@ -400,7 +411,7 @@ function render() {
   } else if(state.step===8){
     html=`<div class="screen">
       <h2>Refund Instructions</h2>
-      <video controls poster="https://dummyimage.com/600x200/cccccc/222222&text=Refund+Instructions">
+      <video controls autoplay playsinline muted poster="https://dummyimage.com/890x250/cccccc/222222&text=Refund+Instructions">
         <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4"/>
       </video>
       <p>Refund by: <b>${state.refund||''}</b>. Please follow on-screen instructions to register your ${state.refund.toLowerCase()} for refund.</p>
@@ -427,7 +438,7 @@ function render() {
   } else if(state.step===11){
     html=`<div class="screen">
       <h2>Collect your Tax Free Form</h2>
-      <video controls poster="https://dummyimage.com/600x200/cccccc/222222&text=Tax+Free+Form">
+      <video controls autoplay playsinline muted poster="https://dummyimage.com/890x250/cccccc/222222&text=Tax+Free+Form">
         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
       </video>
       <div class="card">Remember to complete Customs validation at departure!</div>
@@ -503,6 +514,13 @@ function render() {
       document.getElementById('rejectBtn').onclick=()=>{state.assistantApproved=false;state.step=0;render();};break;
     case 11:document.getElementById('finishBtn').onclick=()=>{state.step=12;render();};break;
   }
+
+  // Video: try to play() programmatically after render. For iOS/Safari you must interact first!
+  setTimeout(() => {
+    document.querySelectorAll("video[autoplay]").forEach(v => {
+      try { v.play(); }catch(e){}
+    });
+  },300);
 }
 render();
   </script>
