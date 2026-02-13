@@ -2,110 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Local Grey Kiosk Demo + QR Scan</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <!-- html5-qrcode, MIT, pure JS, camera scanner, zero-config: -->
-  <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <title>Local Grey Kiosk</title>
+  <meta name="viewport" content="width=460,initial-scale=1">
+  <script src="https://unpkg.com/html5-qrcode@2.4.3/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.1/dist/tesseract.min.js"></script>
   <style>
-    html, body { background: #f4f6f9;}
-    body { font-family: "SF Pro Display", Arial, sans-serif; color: #222A32; margin: 0; }
-    .app-container { max-width: 432px; margin: 40px auto; background: white; border-radius: 18px;
-      box-shadow: 0 6px 32px #0054a644, 0 1.5px 4px #555a6211; overflow: hidden;}
-    .app-header {
-      background: #555A62;
-      color: white;
-      padding: 26px 0 26px 0;
-      text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-      letter-spacing: 0.02em;
-      border-radius: 18px 18px 0 0;
-    }
-    .screen { padding: 28px 14px 20px 14px; min-height: 430px; box-sizing: border-box;}
-    h2 { margin: 0 0 16px 0; font-size: 1.3rem; color: #0054A6; font-weight: 700;}
-    .card { background: #e6f0fa; border-radius: 18px; padding: 16px 18px; margin: 22px 0 20px 0; font-size: 1.06rem;}
-    ul { padding-left: 22px; margin-top: 0; margin-bottom: 10px;}
-    .elig { font-weight: bold; margin-top:10px; margin-bottom: 4px; }
-    label { font-weight: 600; color: #144169; margin-top:0.6em; display: block;}
-    input, select, textarea, .picker-input, .btn-primary, .btn-secondary, video { width: 100%; box-sizing: border-box;}
-    input, select, textarea { font-size: 1.06rem; padding: 14px; border-radius: 18px; border: 1.5px solid #B0C6E8; background: #fff; margin-bottom: 13px;}
-    input:focus, select:focus, textarea:focus { border-color: #0054A6; background: #e6f0fa; outline: none; }
-    textarea { min-height: 80px;}
-    .btn-primary {
-      background: #0054A6; color: white; padding: 14px 0; border: none;
-      border-radius: 18px; font-size: 1.18rem; font-weight: 700;
-      margin-top: 16px; margin-bottom: 8px;
-      box-shadow: 0 2px 8px #0054a622; cursor: pointer; transition: background .13s;
-    }
-    .btn-primary:active { background: #003366; }
-    .btn-secondary {
-      background: #f4f6f9; color: #0054A6; border: 1.5px solid #B0C6E8;
-      font-weight: 600; padding: 14px 0; border-radius: 18px; margin-bottom: 8px; cursor: pointer;
-    }
-    .receipt-list { background: #f4f6f9; margin-bottom: 6px; border-radius: 18px; padding: 12px 5px;}
-    .receipt { background: #fff; border-radius: 12px; box-shadow: 0 1px 6px #0054A622; padding: 10px 12px;
-      margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 1.02rem;}
-    .popup, .modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; background: #fff;
-      border-radius: 18px; box-shadow: 0 6px 32px #0054A644; padding: 20px;
-      transform: translate(-50%, -50%); z-index: 100; animation: modalIn .18s;}
-    @keyframes modalIn { 0% { opacity: 0; transform:scale(0.96) translate(-50%,-50%);} 100% {opacity: 1;transform:scale(1) translate(-50%,-50%);} }
-    .overlay, .modal-bg { background: #0054A622; position: fixed; inset: 0; z-index: 99;}
-    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 1.04rem; margin-bottom: 14px;}
-    input[type="checkbox"] { width: 22px; height: 22px; margin: 0; accent-color: #0054A6; }
-    video { border-radius: 18px; background: #f4f6f9; margin-bottom: 18px; display: block; }
-    .picker-label { font-weight: 600; color: #0054A6; margin-bottom: 10px; margin-top: 14px; display: block;}
-    .picker-input {
-      font-size: 1.12rem;
-      border-radius: 18px;
-      padding: 16px;
-      border: 1.5px solid #B0C6E8;
-      background: #f4f6f9;
-      cursor: pointer;
-      text-align: left;
-      color: #222;
-      margin-bottom: 17px;
-      margin-top: 6px;
-      transition: border 0.15s;
-      user-select: none;
-    }
-    .picker-input:active, .picker-input:focus { border-color: #0054A6; }
-    .picker-modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; padding: 0 0 16px 0;
-      background: #fff; border-radius: 18px; box-shadow: 0 6px 32px #0054A684;
-      transform: translate(-50%, -50%); z-index: 100; display: flex; flex-direction: column; align-items: stretch;
-      animation: modalIn .19s;}
-    .picker-wheel-wrap { flex: 1 1 auto; height: 248px; overflow: hidden; position: relative; margin-top:0;}
-    .picker-wheel { height: 100%; overflow-y: scroll; overscroll-behavior: contain; scroll-behavior: smooth;}
-    .picker-list { margin: 0; padding: 0; list-style: none; min-height: 100%;}
-    .picker-item { height: 48px; line-height: 48px; font-size: 1.10rem; text-align: center; cursor: pointer;
-      color: #174699; border-radius: 10px; user-select: none; transition: background .16s, color .16s;
-      margin: 0 18px;}
-    .picker-item.selected { background: #0054A6; color: #fff; font-weight: bold;}
-    .picker-highlight { position: absolute; left: 0; right: 0; top: 100px; height: 48px; border-radius: 12px;
-      pointer-events: none; border: 2px solid #0054A6; box-sizing: border-box; background: rgba(0,84,166, 0.06); z-index: 9;}
-    .picker-actions { padding: 18px 28px 0 28px; display: flex; justify-content: flex-end; align-items: center;}
-    .picker-close { font-size: 1.09rem; background: #555a62; color: #fff; border: none; border-radius: 11px;
-      padding: 9px 28px; cursor: pointer; font-weight: 600; margin-left: 4px; transition: background .2s;}
-    .picker-close:hover { background: #003366; }
-    @media (max-width:430px) { .picker-modal, .modal {width:98vw;} }
-    .linkbtn { color: #0054A6 !important; text-decoration: underline; font-weight: 500; background:none; border:0; cursor:pointer; font-size:1em; padding:0;}
-    .date-modal { position: fixed; left:50%; top:50%; width: 350px; max-width:96vw; background: #fff; border-radius:20px; box-shadow:0 8px 32px rgba(0,80,165,0.24); padding:20px 0 16px 0; transform:translate(-50%,-50%); z-index:101; display:flex; flex-direction:column; animation: pickerpop .19s;}
-    @keyframes pickerpop { 0%{opacity:.0;transform:scale(0.96) translate(-52%,-52%);} 100%{opacity:1;transform:scale(1) translate(-50%,-50%);} }
-    .date-wheel-row { display:flex; align-items: stretch; justify-content:center; gap:16px; margin-bottom:0;}
-    .date-wheel-col { flex:1 1 0; min-width:80px; position:relative;}
-    .date-wheel-wrap { height: 160px; overflow:hidden; position:relative;}
-    .date-wheel { height:100%; overflow-y:scroll; scroll-behavior:smooth; }
-    .date-item { height: 40px; line-height:40px; text-align:center; font-size:1.08em; color:#174699; background:#fff; cursor:pointer; transition:background .13s, color .13s; margin:0 6px; border-radius:10px;}
-    .date-item.selected { background: #0054A6; color:#fff; font-weight:bold;}
-    .date-highlight { position:absolute; left:0;right:0;top:60px;height:40px; border-radius:8px; pointer-events: none; border:2px solid #0054A6; background:rgba(0,84,166,0.06);z-index:9;}
-    .date-actions { padding:12px 20px 0 20px; text-align:right;}
-    .date-close { font-size:1.06em; background:#555a62; color:#fff; border-radius:8px; border:none; padding:8px 22px; cursor:pointer;}
-    .date-close:hover {background:#003366;}
-    .qr-modal camera, .qr-modal #reader, .qr-video, .qr-preview { width: 100% !important; max-width: 320px;}
-    .qr-modal { background: #fff; border-radius: 14px; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 999999; box-shadow: 0 5px 32px #0054a666; width: 350px; max-width: 98vw; padding: 12px 4px 26px 4px; }
-    .qr-close { background: #555a62; color: #fff; border: none; border-radius:8px; font-size: 1rem; font-weight:700; padding: 8px 28px; margin-top:16px; cursor:pointer;}
-    .qr-close:hover { background: #0054a6;}
-    #reader>video { border-radius:10px; }
+    body { font-family: "SF Pro Display", Arial, sans-serif; background: #f4f6f9; color: #222a32; margin: 0;}
+    .app-container { max-width: 432px; margin: 30px auto; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 6px 32px #0054a642;}
+    .app-header { background: #555A62; color: #fff; text-align: center; font-size: 2rem; font-weight: bold; letter-spacing: .02em; border-radius: 22px 22px 0 0; padding: 22px 0 17px 0; margin-bottom: 10px;}
+    .screen { padding: 30px 16px 22px 16px; min-height: 430px;}
+    h2 { font-size: 1.16rem; color: #0054A6; font-weight: 700; margin-bottom: 1em;}
+    .card { background: #e6f0fa; border-radius: 18px; padding: 18px 20px; margin: 22px 0 15px 0;}
+    ul { padding-left: 22px; margin: 0 0 8px 0;}
+    .elig, .card strong {font-weight: bold;}
+    label { font-weight: 600; color: #144169; margin-top: .7em; display: block;}
+    input, select, textarea, .picker-input, .btn-primary, .btn-secondary, video {width:100%; box-sizing: border-box;}
+    input, select, textarea { font-size: 0.98rem; padding: 14px; border-radius: 14px; border: 1.5px solid #b0c6e8; background: #fff; margin-bottom: 13px;}
+    input:focus, select:focus, textarea:focus { border-color: #0054A6; background: #e6f0fa; outline: none;}
+    textarea { min-height: 64px;}
+    .btn-primary { background: #0054A6; color: #fff; padding: 15px 0; border:none;border-radius: 18px; font-size: 1.17rem; font-weight: 700; margin: 20px 0 14px 0; box-shadow: 0 2px 8px #0054a622; cursor: pointer;}
+    .btn-primary:active { background:#003366;}
+    .btn-secondary{background:#f4f6f9;color:#0054A6;border:1.5px solid #b0c6e8;font-weight:600;padding:13px 0;border-radius:18px;margin-bottom:10px;cursor:pointer;}
+    .receipt-list{background:#f4f6f9;margin-bottom:5px;border-radius:17px;padding:10px 6px;}
+    .receipt{background:#fff;border-radius:13px;box-shadow:0 1px 6px #0054A622;padding:10px 13px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;}
+    .popup, .modal, .qr-modal, .cardscan-modal{position:fixed;top:50%;left:50%;width:350px;max-width:96vw;background:#fff;border-radius:18px;box-shadow:0 6px 32px #0054A644;padding:22px 17px 22px 17px;transform:translate(-50%,-50%);z-index:104;}
+    .overlay, .modal-bg{background:rgba(0,84,166,.13);position:fixed;inset:0;z-index:99;}
+    .checkbox-label{display:flex;align-items:center;gap:8px;font-size:1.02em;}
+    input[type="checkbox"]{width:22px;height:22px;accent-color:#0054A6;}
+    video{border-radius:18px;background:#f4f6f9;margin-bottom:13px;display:block;}
+    .picker-label{font-weight:600;color:#0054A6;margin-bottom:6px;margin-top:8px;display:block;}
+    .picker-input{font-size:1.06em;border-radius:13px;padding:12px;border:1.5px solid #B0C6E8;background:#f4f6f9;cursor:pointer;text-align:left;color:#222;margin-bottom:11px;margin-top:4px;transition:border .14s;user-select:none;}
+    .picker-input:active,.picker-input:focus{border-color:#0054A6;}
+    .qr-modal,#ocr-preview img{width:310px;max-width:99vw;border-radius:10px;}
+    .btn-scan-photo{margin:13px 0 9px 0;font-size:.97em;}
+    .ocr-progress{font-size:.97em;color:#285;}
   </style>
 </head>
 <body>
@@ -118,155 +48,36 @@
 const state = {
   step: 0,
   language: "English",
-  passport: "",
-  qrData: "",
+  passport: "", qrData: "",
   traveler: { name: "", address: "", email: "", passport: "" },
   residence: { country: "", departure: "" },
   memberEmail: "",
-  receipts: [ 
-    {number: '12345', amount: 150, store: 'PRINTEMPS'},
-    {number: '23456', amount: 87, store: 'Lafayette'},
-    {number: '42407', amount: 224, store: 'ZARA'},
-    {number: '59234', amount: 54, store: 'Carrefour'},
-    {number: '13090', amount: 68, store: 'Starbucks'},
-    {number: '99123', amount: 300, store: 'Galeries'},
-    {number: '77222', amount: 25, store: 'Uniqlo'},
-    {number: '81654', amount: 178, store: 'Apple Store'}
+  receipts: [
+    {number:'12345',amount:150,store:'PRINTEMPS'},
+    {number:'23456',amount:87,store:'Lafayette'},
+    {number:'42407',amount:224,store:'ZARA'},
+    {number:'59234',amount:54,store:'Carrefour'},
+    {number:'13090',amount:68,store:'Starbucks'},
+    {number:'99123',amount:300,store:'Galeries'},
+    {number:'77222',amount:25,store:'Uniqlo'},
+    {number:'81654',amount:178,store:'Apple Store'}
   ],
-  refund: "",
-  agreed: false,
-  needAssistant: false,
-  assistantApproved: false
+  refund: "", agreed: false, needAssistant: false, assistantApproved:false,
+  card: {pan:"",expiry:"",name:"",ccv:""}
 };
-
-const languages = [
-  "English", "Mandarin", "Hindi", "Spanish", "French",
-  "Arabic", "Bengali", "Russian", "Portuguese", "Urdu",
-  "Indonesian", "German", "Japanese", "Swahili", "Marathi",
-  "Telugu", "Turkish", "Korean", "Vietnamese", "Italian"
-];
-// ... iOS wheel pickers unchanged (see previous COMPLETE CODE above) ...
-// To fit the message, code for iOS wheel pickers is omitted here, 
-// But use the same as with previous code.
-
-function showPickerWheel(current, callback) {
-  // ... (same as above, or as in previous answers)
-  const modalBg = document.getElementById("modalBg");
-  modalBg.style.display = "block";
-  let selectedIdx = languages.indexOf(current); if (selectedIdx<0)selectedIdx=0;
-  const modal = document.createElement('div');
-  modal.className = "picker-modal";
-  modal.innerHTML = `
-    <div class="picker-wheel-wrap">
-      <div class="picker-highlight"></div>
-      <div class="picker-wheel">
-        <ul class="picker-list">
-          ${languages.map((lang, i) =>`<li class="picker-item${i===selectedIdx?' selected':''}" tabindex="0" data-idx="${i}">${lang}</li>`).join('')}
-        </ul>
-      </div>
-    </div>
-    <div class="picker-actions">
-      <button class="picker-close">Close</button>
-    </div>`;
-  document.body.appendChild(modal);
-  const items = modal.querySelectorAll('.picker-item');
-  const wheel = modal.querySelector('.picker-wheel');
-  const itemHeight = 48;
-  setTimeout(() => { wheel.scrollTop = (selectedIdx)*itemHeight; highlight(); },30);
-  function highlight(focus, snap) {
-    let offset = Math.round(wheel.scrollTop/itemHeight);
-    if(offset<0) offset=0; if(offset>languages.length-1) offset=languages.length-1;
-    items.forEach((it,i)=> it.classList.toggle('selected', i===offset));
-    if(typeof snap==="undefined"||snap) wheel.scrollTo({top:offset*itemHeight,behavior:'smooth'});
-    if(focus) items[offset].focus();
-  }
-  let isTouching = false, lastTouchY = null, vel=0, momentumFrame=null;
-  wheel.addEventListener('touchstart', (e)=>{ isTouching=true; vel=0; if(momentumFrame) cancelAnimationFrame(momentumFrame); lastTouchY=e.touches[0].clientY; });
-  wheel.addEventListener('touchmove', (e)=>{ let y=e.touches[0].clientY; let dy=y-lastTouchY; vel=dy/16; lastTouchY=y;});
-  wheel.addEventListener('touchend', ()=>{isTouching=false; let spd=vel*18; function mom(){if(Math.abs(spd)>2){wheel.scrollTop-=spd; spd*=.94;momentumFrame=requestAnimationFrame(mom); highlight();} else {let idx=Math.round(wheel.scrollTop/itemHeight); wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(true);} } mom();});
-  let wheelTimeout=null;
-  wheel.addEventListener('wheel', e=>{
-    if(wheelTimeout) clearTimeout(wheelTimeout);
-    wheelTimeout = setTimeout(()=>{let idx=Math.round(wheel.scrollTop/itemHeight); wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'}); highlight(true);},80);
-    setTimeout(highlight,16);
-  });
-  modal.addEventListener('keydown', (e)=>{
-    let idx = Array.from(items).findIndex(it=>it.classList.contains('selected'));
-    if(e.key==='ArrowDown'){if(idx<languages.length-1){ idx++; scrollToIdx(idx);} e.preventDefault();}
-    else if(e.key==='ArrowUp'){if(idx>0){ idx--; scrollToIdx(idx);} e.preventDefault();}
-    else if(e.key==='Enter'){ selectIdx(idx);}
-    else if(e.key==='Escape'){close();}
-  });
-  function scrollToIdx(idx) { wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'}); highlight(true);}
-  function selectIdx(idx){
-    callback(languages[idx]); close();
-  }
-  modal.querySelector('.picker-list').onclick = e=>{
-    if(e.target.classList.contains('picker-item')) selectIdx(Number(e.target.dataset.idx));
-  }
-  wheel.addEventListener('scroll', ()=>{ if(!isTouching) highlight(); });
-  let lastScroll=-1000;
-  wheel.addEventListener('scroll', ()=>{
-    lastScroll=Date.now();
-    setTimeout(()=>{if(Date.now()-lastScroll>88){highlight(true);}},89);
-  });
-  modal.querySelector('.picker-close').onclick = close;
-  modalBg.onclick = close;
-  function close(){ document.body.removeChild(modal); modalBg.style.display="none";document.getElementById('langPickerField').focus(); }
-}
-function showDatePicker(current, callback) {
-  // ... You can paste the earlier showDatePicker code here (see above for full details) ...
-  // If you need, ask for a dedicated code file. (It fits within this HTML structure.)
-}
-/* -- QR code modal using html5-qrcode library -- */
-window.qrScannerActive = false;
-function showQrModal(onScan) {
-  if (window.qrScannerActive) return; // Only one at a time
-  window.qrScannerActive = true;
-  const modalBg = document.getElementById("modalBg");
-  modalBg.style.display = "block";
-  let qrdiv = document.createElement("div");
-  qrdiv.className = "qr-modal";
-  qrdiv.innerHTML = `<div id="reader" style="width:100%; max-width:320px; margin:auto;"></div>
-    <button class="qr-close" id="qrCloseBtn">Close</button>
-    <div id="qrMsg" style="text-align:center;font-size:1.08em;margin:8px 0 0 0;color:#0054A6;"></div>`;
-  document.body.appendChild(qrdiv);
-  let scanner = new Html5Qrcode("reader");
-  scanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 220 },
-    qrCodeMessage => {
-      onScan(qrCodeMessage);
-      document.getElementById('qrMsg').textContent = "✅ QR recognized!";
-      close();
-    },
-    error => {} 
-  ).catch(err => { document.getElementById('qrMsg').textContent = "Camera not available."; });
-  document.getElementById('qrCloseBtn').onclick = close;
-  modalBg.onclick = close;
-  function close() {
-    window.qrScannerActive = false;
-    scanner.stop().then(()=>{scanner.clear();});
-    document.body.removeChild(qrdiv);
-    modalBg.style.display = "none";
-  }
-}
-
 function render() {
-  const $flow = document.getElementById("flow");
-  $flow.innerHTML = "";
-  let html = '';
-  if (state.step === 0) {
-    html = `
+  let html = '', $flow = document.getElementById('flow');
+  if(state.step===0){
+    html=`
       <div>
         <label class="picker-label">Select your language</label>
-        <div id="langPickerField" class="picker-input" tabindex="1">${state.language}</div>
+        <div id="langPickerField" class="picker-input" tabindex="1">${state.language||'English'}</div>
         <button class="btn-primary" id="langNextBtn">Next</button>
       </div>
     `;
-  } else if (state.step === 1) {
-    html = `
-      <div>
+  }else if(state.step===1){
+    html=`
+      <div class="screen">
         <h2>Have your documents ready</h2>
         <div class="card">
           <ul>
@@ -284,26 +95,26 @@ function render() {
         <button class="btn-primary" id="docNextBtn">Next</button>
       </div>
     `;
-  } else if (state.step === 2) {
-    html = `
-      <div>
+  }else if(state.step===2){
+    html=`
+      <div class="screen">
         <h2>Passport/ID Scanning</h2>
         <video controls poster="https://assets-global.blue.com/videos/passport-scan.jpg">
           <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
         </video>
         <label>Type your Passport or ID number</label>
-        <input type="text" id="passportInput" value="${state.passport}" placeholder="Passport or ID Number"/>
+        <input type="text" id="passportInput" value="${state.passport}" placeholder="Passport or ID Number">
         <button type="button" class="btn-secondary" id="qrbtn">Scan QR code</button>
         ${state.qrData?`<div style="margin:10px 0 0 0;">
-          <label>Scanned QR Value</label>
-          <input type="text" value="${state.qrData}" readonly style="font-family:monospace;">
+        <label>Scanned QR Value</label>
+        <input type="text" value="${state.qrData}" readonly style="font-family:monospace;">
         </div>`:""}
         <button class="btn-primary" id="passportNextBtn">Continue</button>
       </div>
     `;
-  } else if (state.step === 3) {
-    html = `
-      <div>
+  }else if(state.step===3){
+    html=`
+      <div class="screen">
         <h2>Traveler Information</h2>
         <input id="travelerName" type="text" placeholder="Full Name" value="${state.traveler.name||''}"/>
         <input id="travelerAddress" type="text" placeholder="Address" value="${state.traveler.address||''}"/>
@@ -312,71 +123,74 @@ function render() {
         <button class="btn-primary" id="travelerNextBtn">Next</button>
       </div>
     `;
-  } else if (state.step === 4) {
-    html = `
-      <div>
+  }else if(state.step===4){
+    html=`
+      <div class="screen">
         <h2>Residence & Departure</h2>
-        <label>
-          Country of Residence
-          <input id="residenceCountry" type="text" value="${state.residence.country||''}"/>
-        </label>
-        <label>
-          Departure Date
-          <div id="iosDateField" class="picker-input" tabindex="0">${state.residence.departure||'Select date...'}</div>
-        </label>
+        <label>Country of Residence <input id="residenceCountry" type="text" value="${state.residence.country||''}"/></label>
+        <label>Departure Date <input type="date" id="resdate" value="${state.residence.departure||''}"/></label>
         <button class="btn-primary" id="residenceNextBtn">Next</button>
       </div>
     `;
-  } else if (state.step === 5) {
-    html = `
-      <div>
+  }else if(state.step===5){
+    html=`
+      <div class="screen">
         <h2>Become a Member (optional)</h2>
         <input id="memberEmail" type="email" placeholder="Email" value="${state.memberEmail||''}" />
         <button class="btn-primary" id="membershipJoinBtn">Join</button>
         <button class="btn-secondary" id="membershipSkipBtn">Skip</button>
       </div>
     `;
-  } else if (state.step === 6) {
-    html = `
-      <div>
+  }else if(state.step===6){
+    html=`
+      <div class="screen">
         <h2>Your Receipts</h2>
         <div class="receipt-list" id="receiptsList">
-          ${state.receipts.map((r,i) => `
-            <div class="receipt">
-              <span>Receipt #${r.number}, €${r.amount}, Store: ${r.store}</span>
-              <button class="btn-secondary" style="width:auto;padding:4px 12px" onclick="window.showReceipt(${i})">View</button>
-            </div>
-          `).join('')}
+        ${state.receipts.map((r,i)=>`<div class="receipt"><span>Receipt #${r.number}, €${r.amount}, Store: ${r.store}</span>
+        <button class="btn-secondary" style="width:auto;padding:4px 12px" onclick="window.showReceipt(${i})">View</button></div>`).join('')}
         </div>
         <button class="btn-secondary" id="scanReceiptBtn">Scan New Receipt</button>
         <button class="btn-primary" id="receiptsNextBtn">Next</button>
       </div>
     `;
-  } else if (state.step === 7) {
-    html = `
-      <div>
+  }else if(state.step===7){
+    html=`
+      <div class="screen">
         <h2>Choose Refund Method</h2>
         <button class="btn-primary" id="refundCCBtn">Credit Card</button>
         <button class="btn-primary" id="refundWalletBtn">Digital Wallet</button>
         <button class="btn-primary" id="refundCashBtn">Cash</button>
       </div>
     `;
-  } else if (state.step === 8) {
-    html = `
-      <div>
+  }else if(state.step===8){
+    html=`
+      <div class="screen">
         <h2>Refund Instructions</h2>
-        <video controls poster="https://assets-global.blue.com/videos/payment.jpg">
+        <video controls poster="https://assets-global.blue.com/videos/payment.jpg" style="margin-bottom:9px;">
           <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4"/>
         </video>
-        <p>Refund by: <b>${state.refund}</b>. Please follow on-screen instructions to register your ${state.refund.toLowerCase()} for refund.</p>
+        <p>Refund by: <b>${state.refund}</b>.</p>
+        ${
+          state.refund==="Credit Card" ? `
+          <div class="card">
+          <label><b>Scan Credit Card with Camera or Upload Photo</b></label>
+          <input type="file" accept="image/*" capture="environment" id="cardfile" class="btn-scan-photo">
+          <div id="ocr-progress" class="ocr-progress"></div>
+          <div id="ocr-preview"></div>
+          <div class="ccfield" id="ccfields" style="display:${state.card.pan?'':'none'};margin-top:13px">
+            <label>Credit Card Number</label><input id="ccnum" type="text" maxlength="24" value="${state.card.pan||''}" readonly>
+            <label>Expiry Date</label><input id="ccexp" type="text" maxlength="7" value="${state.card.expiry||''}" readonly>
+            <label>Name on Card</label><input id="ccname" type="text" maxlength="48" value="${state.card.name||''}" readonly>
+            <label>Security Code (CVV)</label><input id="cccvv" type="text" maxlength="4" placeholder="Fill yourself" value="${state.card.ccv||''}">
+          </div></div>`:""}
         <button class="btn-primary" id="refundNextBtn">Continue</button>
       </div>
     `;
-  } else if (state.step === 9) {
-    html = `
-      <div>
+  }else if(state.step===9){
+    html=`
+      <div class="screen">
         <h2>Summary & Traveler Declaration</h2>
-        <textarea readonly>${getSummaryText()}</textarea>
+        <textarea readonly style="font-size:.97em">${getSummaryText()}</textarea>
         <label class="checkbox-label">
           <input id="agreeCheck" type="checkbox" ${state.agreed?"checked":""}/>
           I accept <button class="linkbtn" id="showTermsLink">Terms & Conditions</button> and <button class="linkbtn" id="showDeclarationLink">Traveler Declaration</button>
@@ -384,169 +198,125 @@ function render() {
         <button class="btn-primary" id="submitBtn">Submit</button>
       </div>
     `;
-  } else if (state.step === 10) {
-    html = `
-      <div>
-        <h2>Assistance Required</h2>
-        <p>A shop assistant will help you soon.</p>
-        <input id="assistantInput" type="text" placeholder="Scan assistant QR code"/>
-        <div style="display:flex;gap:12px;margin-top:22px;">
-          <button class="btn-primary" id="approveBtn" style="flex:1">Approve</button>
-          <button class="btn-secondary" id="rejectBtn" style="flex:1">Reject</button>
-        </div>
-      </div>
-    `;
-  } else if (state.step === 11) {
-    html = `
-      <div>
+  }else if(state.step===10){
+    html=`<div class="screen"><h2>Assistance Required</h2><p>A shop assistant will help you soon.</p>
+        <input id="assistantInput" type="text" placeholder="Scan assistant QR code">
+        <div style="display:flex;gap:13px;">
+        <button class="btn-primary" id="approveBtn" style="flex:1">Approve</button>
+        <button class="btn-secondary" id="rejectBtn" style="flex:1">Reject</button>
+        </div></div>`;
+  }else if(state.step===11){
+    html=`<div class="screen">
         <h2>Collect your Tax Free Form</h2>
         <video controls poster="https://assets-global.blue.com/videos/taxfree_form.jpg">
           <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
         </video>
-        <div class="card">
-          Remember to complete Customs validation at departure!
-        </div>
+        <div class="card">Remember to complete Customs validation at departure!</div>
         <button class="btn-primary" id="finishBtn">Finish</button>
-      </div>
-    `;
-  } else if (state.step === 12) {
-    html = `
-      <div style="text-align:center;margin-top:77px;">
-        <h2>Enjoy your journey!</h2>
-        <div style="font-size:20px;color:#0054A699;margin:22px;">Thank you!</div>
-      </div>
-    `;
+      </div>`;
+  }else if(state.step===12){
+    html=`<div class="screen" style="text-align:center;">
+      <h2>Enjoy your journey!</h2>
+      <div style="font-size:18px;color:#0054A699;margin:23px;">Thank you!</div>
+    </div>`;
   }
-  $flow.innerHTML = html;
-
-  switch(state.step) {
+  $flow.innerHTML=html;
+  switch(state.step){
     case 0:
-      document.getElementById('langPickerField').onclick = function(){
-        showPickerWheel(state.language, lang => { state.language = lang; render(); });
-      };
-      document.getElementById('langPickerField').onkeydown = function(e){ if (e.key===' '||e.key==='Enter') showPickerWheel(state.language, lang => { state.language = lang; render(); }); }
-      document.getElementById('langNextBtn').onclick = () => { state.step++; render(); }
-      break;
+      document.getElementById('langNextBtn').onclick=()=>{state.step++;render();};break;
     case 1:
-      document.getElementById('docNextBtn').onclick = () => { state.step++; render(); }
-      break;
-    case 2:
-      document.getElementById('passportNextBtn').onclick = () => {
-        state.passport = document.getElementById('passportInput').value;
-        state.traveler.passport = state.passport;
-        state.step++; render();
-      };
-      if(document.getElementById('qrbtn')) {
-        document.getElementById('qrbtn').onclick = () => {
-          showQrModal(qrString=>{
-            state.qrData = qrString;
-            render();
-          });
-        };
-      }
-      break;
-    case 3:
-      document.getElementById('travelerNextBtn').onclick = () => {
-        state.traveler.name = document.getElementById('travelerName').value;
-        state.traveler.address = document.getElementById('travelerAddress').value;
-        state.traveler.email = document.getElementById('travelerEmail').value;
-        state.traveler.passport = document.getElementById('travelerPassport').value;
-        state.step++; render();
-      }
-      break;
-    case 4:
-      document.getElementById('residenceCountry').onchange = e => { state.residence.country = e.target.value;}
-      document.getElementById('iosDateField').onclick = function(){
-        showDatePicker(state.residence.departure, date => { state.residence.departure = date; render(); });
-      };
-      document.getElementById('iosDateField').onkeydown = function(e){ if (e.key===' '||e.key==='Enter') showDatePicker(state.residence.departure, date => { state.residence.departure = date; render(); });}
-      document.getElementById('residenceNextBtn').onclick = () => {
-        state.residence.country = document.getElementById('residenceCountry').value;
-        state.step++; render();
-      }
-      break;
+      document.getElementById('docNextBtn').onclick=()=>{state.step++;render();};break;
+    case 2: 
+      document.getElementById('passportNextBtn').onclick=()=>{state.passport=document.getElementById('passportInput').value;state.traveler.passport=state.passport;state.step++;render();};
+      if(document.getElementById('qrbtn')){
+        document.getElementById('qrbtn').onclick=function(){
+          let modalBg = document.getElementById("modalBg");modalBg.style.display="block";
+          let qrdiv = document.createElement("div");
+          qrdiv.className="qr-modal";
+          qrdiv.innerHTML = `<div id="reader" style="width:99vw;max-width:320px"></div><button class="qr-close" id="qrCloseBtn">Close</button><div id="qrMsg" style="text-align:center;font-size:1.09em;color:#0054A6;"></div>`;
+          document.body.appendChild(qrdiv);
+          let qr=new Html5Qrcode("reader");
+          qr.start({facingMode:"environment"},{fps:10,qrbox:220},code=>{state.qrData=code;qr.stop();document.body.removeChild(qrdiv);modalBg.style.display="none";render();},()=>{});
+          document.getElementById('qrCloseBtn').onclick=()=>{qr.stop();document.body.removeChild(qrdiv);modalBg.style.display="none";}
+          modalBg.onclick=()=>{qr.stop();document.body.removeChild(qrdiv);modalBg.style.display="none";}
+        }
+      } break;
+    case 3: document.getElementById('travelerNextBtn').onclick=()=>{
+      state.traveler.name=document.getElementById('travelerName').value;
+      state.traveler.address=document.getElementById('travelerAddress').value;
+      state.traveler.email=document.getElementById('travelerEmail').value;
+      state.traveler.passport=document.getElementById('travelerPassport').value;state.step++;render();};break;
+    case 4: 
+      document.getElementById('residenceNextBtn').onclick=()=>{
+        state.residence.country=document.getElementById('residenceCountry').value;
+        state.residence.departure=document.getElementById('resdate').value;
+        state.step++;render();
+      };break;
     case 5:
-      document.getElementById('membershipJoinBtn').onclick = () => { state.memberEmail = document.getElementById('memberEmail').value; state.step++; render(); }
-      document.getElementById('membershipSkipBtn').onclick = () => { state.memberEmail = ""; state.step++; render(); }
-      break;
+      document.getElementById('membershipJoinBtn').onclick=()=>{state.memberEmail=document.getElementById('memberEmail').value;state.step++;render();};
+      document.getElementById('membershipSkipBtn').onclick=()=>{state.memberEmail="";state.step++;render();};break;
     case 6:
-      document.getElementById('scanReceiptBtn').onclick = () => {
-        state.receipts.push({ number: '' + (10000 + Math.floor(Math.random()*90000)), amount: Math.floor(Math.random()*100+65), store: 'NEWSTORE' });
-        render();
-      };
-      document.getElementById('receiptsNextBtn').onclick = () => { state.step++; render(); };
-      break;
+      document.getElementById('scanReceiptBtn').onclick=()=>{state.receipts.push({number:''+(10000+Math.floor(Math.random()*90000)),amount:Math.floor(Math.random()*100+65),store:'NEWSTORE'});render();};
+      document.getElementById('receiptsNextBtn').onclick=()=>{state.step++;render();};break;
     case 7:
-      document.getElementById('refundCCBtn').onclick = () => { state.refund = 'Credit Card'; state.step++; render(); }
-      document.getElementById('refundWalletBtn').onclick = () => { state.refund = 'Digital Wallet'; state.step++; render(); }
-      document.getElementById('refundCashBtn').onclick = () => { state.refund = 'Cash'; state.step++; render(); }
-      break;
+      document.getElementById('refundCCBtn').onclick=()=>{state.refund='Credit Card';state.step++;render();};
+      document.getElementById('refundWalletBtn').onclick=()=>{state.refund='Digital Wallet';state.step++;render();};
+      document.getElementById('refundCashBtn').onclick=()=>{state.refund='Cash';state.step++;render();};break;
     case 8:
-      document.getElementById('refundNextBtn').onclick = () => { state.step++; render();}
-      break;
+      if(state.refund==="Credit Card"&&document.getElementById('cardfile')){
+        function parseCardText(text) {
+          let pan = (text.match(/\b(\d{4}[ -]?){3,5}\d{0,4}\b/)||[])[0]||""; pan = pan.replace(/[^\d]/g,"").slice(0,16);
+          let expiry = (text.match(/(0[1-9]|1[0-2])[\/\-\s](\d{2,4})/)||[])[0]||"";
+          let lines = text.split('\n'); let name = "";
+          for(let l of lines){if(/[A-Z]+ [A-Z]+/.test(l)&&l.length<26){name=l.trim();break;}}
+          return {pan,expiry:expiry.replace(/[^\/\d]/g,""),name};
+        }
+        document.getElementById('cardfile').onchange=e=>{
+          let file = e.target.files[0];
+          if(!file)return;
+          document.getElementById('ocr-progress').innerText = "Recognizing...";
+          document.getElementById('ocr-preview').innerHTML = "";
+          Tesseract.recognize(file,'eng',{logger:m=>{if(m.progress&&m.progress<1)document.getElementById('ocr-progress').innerText=Math.round(m.progress*100)+"%...";}})
+            .then(({data:{text}})=>{
+              document.getElementById('ocr-progress').innerText = "Done!";
+              let parsed = parseCardText(text);
+              state.card.pan = parsed.pan; state.card.expiry = parsed.expiry; state.card.name = parsed.name;
+              document.getElementById('ccnum').value = parsed.pan;
+              document.getElementById('ccexp').value = parsed.expiry;
+              document.getElementById('ccname').value = parsed.name;
+              document.getElementById('ccfields').style.display = "";
+            });
+          let reader = new FileReader();
+          reader.onload = ev=>{
+            document.getElementById('ocr-preview').innerHTML = `<img src="${ev.target.result}" style="width:100%;margin-top:6px;border-radius:11px;max-width:285px;">`;
+          };
+          reader.readAsDataURL(file);
+        };
+        setTimeout(()=>{ if(document.getElementById('cccvv'))document.getElementById('cccvv').oninput = e=>{state.card.ccv=e.target.value;} },200);
+      }
+      document.getElementById('refundNextBtn').onclick=()=>{ if(document.getElementById('cccvv')) state.card.ccv=document.getElementById('cccvv').value; state.step++;render(); };break;
     case 9:
-      document.getElementById('agreeCheck').onchange = e => {state.agreed = e.target.checked;}
-      document.getElementById('showTermsLink').onclick = e =>{e.preventDefault(); showPopup("Terms & Conditions", "Standard T&C.<br/>For demo purposes.");};
-      document.getElementById('showDeclarationLink').onclick = e=>{e.preventDefault(); showPopup("Traveler Declaration","I confirm I'm not an EU resident, am above 16, and purchases will leave the EU.");};
-      document.getElementById('submitBtn').onclick = () => {
-        if(!document.getElementById('agreeCheck').checked) { alert("Please accept the Terms & Conditions and Traveler Declaration."); return;}
-        state.step=11; render();
-      };
-      break;
+      document.getElementById('agreeCheck').onchange=e=>{state.agreed = e.target.checked;}
+      document.getElementById('showTermsLink').onclick=e=>{e.preventDefault();showPopup("Terms & Conditions","Standard T&C.<br/>For demo purposes.");};
+      document.getElementById('showDeclarationLink').onclick=e=>{e.preventDefault();showPopup("Traveler Declaration","I confirm I'm not an EU resident, am above 16, and purchases will leave the EU.");};
+      document.getElementById('submitBtn').onclick=()=>{if(!state.agreed)return alert("Please accept the Terms & Conditions and Traveler Declaration.");state.step=11;render();};break;
     case 10:
-      document.getElementById('approveBtn').onclick = () => { state.assistantApproved=true; state.step=11; render(); }
-      document.getElementById('rejectBtn').onclick = () => { state.assistantApproved=false; state.step=0; render(); }
-      break;
-    case 11:
-      document.getElementById('finishBtn').onclick = () => { state.step=12; render();}
-      break;
+      document.getElementById('approveBtn').onclick=()=>{state.assistantApproved=true;state.step=11;render();};
+      document.getElementById('rejectBtn').onclick=()=>{state.assistantApproved=false;state.step=0;render();};break;
+    case 11:document.getElementById('finishBtn').onclick=()=>{state.step=12;render();};break;
   }
+}
+window.showReceipt=function(i){const r=state.receipts[i],modalBg=document.getElementById("modalBg");modalBg.style.display="block";const popup=document.createElement("div");popup.className="popup";popup.innerHTML=`<h3 style="margin-top:0">Receipt #${r.number}</h3><table><tr><td>Store:</td><td>${r.store}</td></tr><tr><td>Amount:</td><td>€${r.amount}</td></tr><tr><td>Goods:</td><td>Example Goods</td></tr><tr><td>Quantity:</td><td>1</td></tr></table><button class="btn-primary" id="closeReceiptBtn" style="margin-top:18px">Close</button>`;document.body.appendChild(popup);document.getElementById("closeReceiptBtn").onclick=cls;function cls(){document.body.removeChild(popup);modalBg.style.display="none";}modalBg.onclick=cls;};
+function getSummaryText() {
+  return [`Language: ${state.language}`,`Name: ${state.traveler.name}`,`Address: ${state.traveler.address}`,`Email: ${state.traveler.email}`,`Passport/ID: ${state.traveler.passport}`,state.qrData?`Scanned QR: ${state.qrData}`:"",`Residence: ${state.residence.country}`,`Departure: ${state.residence.departure}`,`Refund: ${state.refund}`,
+    state.refund==="Credit Card"?[`CC Number: ${state.card.pan}`,`Exp: ${state.card.expiry}`,`Name: ${state.card.name}`,`CVV: ${state.card.ccv||"[not filled]"}`].join('\n'):"",`Receipts: ${state.receipts.length}`].filter(Boolean).join('\n');
 }
 function showPopup(title, html) {
-  const modalBg = document.getElementById("modalBg");
-  modalBg.style.display = "block";
-  const popup=document.createElement("div");
-  popup.className="popup";
-  popup.innerHTML = `<h3 style="margin-top:0">${title}</h3><div style="margin-bottom:24px">${html}</div><button class="btn-primary" id="closePopupBtn" style="margin-top:10px">Close</button>`;
+  const modalBg=document.getElementById("modalBg");modalBg.style.display="block";
+  const popup=document.createElement("div");popup.className="popup";
+  popup.innerHTML=`<h3 style="margin-top:0">${title}</h3><div style="margin-bottom:24px">${html}</div><button class="btn-primary" id="closePopupBtn" style="margin-top:10px">Close</button>`;
   document.body.appendChild(popup);
-  document.getElementById("closePopupBtn").onclick = close;
-  function close() { document.body.removeChild(popup); modalBg.style.display="none";}
-  modalBg.onclick = close;
-}
-window.showReceipt = function(i) {
-  const r = state.receipts[i];
-  const modalBg = document.getElementById("modalBg");
-  modalBg.style.display = "block";
-  const popup=document.createElement("div");
-  popup.className="popup";
-  popup.innerHTML = `
-    <h3 style="margin-top:0">Receipt #${r.number}</h3>
-    <table>
-      <tr><td>Store:</td><td>${r.store}</td></tr>
-      <tr><td>Amount:</td><td>€${r.amount}</td></tr>
-      <tr><td>Goods:</td><td>Example Goods</td></tr>
-      <tr><td>Quantity:</td><td>1</td></tr>
-    </table>
-    <button class="btn-primary" id="closeReceiptBtn" style="margin-top:18px">Close</button>
-  `;
-  document.body.appendChild(popup);
-  document.getElementById("closeReceiptBtn").onclick = close;
-  function close() {document.body.removeChild(popup); modalBg.style.display="none";}
-  modalBg.onclick = close;
-}
-function getSummaryText() {
-  return [
-    `Language: ${state.language}`,
-    `Name: ${state.traveler.name}`,
-    `Address: ${state.traveler.address}`,
-    `Email: ${state.traveler.email}`,
-    `Passport/ID: ${state.traveler.passport}`,
-    `Residence: ${state.residence.country}`,
-    `Departure: ${state.residence.departure}`,
-    `Refund: ${state.refund}`,
-    `Receipts: ${state.receipts.length}`,
-    state.qrData ? `QR Scanned: ${state.qrData}` : ""
-  ].filter(Boolean).join('\n');
+  document.getElementById("closePopupBtn").onclick=cls;modalBg.onclick=cls;function cls(){document.body.removeChild(popup);modalBg.style.display="none";}
 }
 render();
 </script>
