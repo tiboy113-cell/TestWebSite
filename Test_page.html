@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Local Grey Kiosk Demo (Issue Flow with iOS Pickers)</title>
+  <title>Local Grey Kiosk Demo (Issue Flow, iOS Pickers, Padded)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     :root {
@@ -11,18 +11,23 @@
       --lightblue: #e6f0fa;
       --gray: #f4f6f9;
       --radius: 18px;
+      --sidepad: 10px;
     }
     html, body { background: var(--gray);}
     body { font-family: "SF Pro Display", Arial, sans-serif; color: #222A32; margin: 0;}
-    .app-container { max-width: 432px; margin: 40px auto; background: white; border-radius: var(--radius); box-shadow: 0 6px 32px #0054a644, 0 1.5px 4px #555a6211;}
-    .app-header { background: var(--local-grey); color: white; padding: 26px; text-align: center; font-size: 2rem; font-weight: bold; letter-spacing: 0.02em; border-radius: 18px 18px 0 0;}
-    .screen { padding: 36px 28px; min-height: 430px;}
+    .app-container { max-width: 432px; margin: 40px auto; background: white; border-radius: var(--radius);
+      box-shadow: 0 6px 32px #0054a644, 0 1.5px 4px #555a6211; overflow: hidden;}
+    .app-header { background: var(--local-grey); color: white; padding: 26px 0 26px 0; text-align: center;
+      font-size: 2rem; font-weight: bold; letter-spacing: 0.02em; border-radius: 18px 18px 0 0;}
+    .screen { padding: 36px var(--sidepad); min-height: 430px;}
     h2 { margin-top: 0; font-size: 1.58rem; color: var(--blue); font-weight: 700;}
-    .card { background: var(--lightblue); border-radius: var(--radius); padding: 16px 18px; margin: 22px 0; font-size: 1.06rem;}
+    .card { background: var(--lightblue); border-radius: var(--radius); padding: 16px 18px; margin: 22px 0;
+      font-size: 1.06rem;}
     ul { padding-left: 22px; margin-top: 0; margin-bottom: 12px;}
     label { font-weight: 600; color: #144169; margin-top:0.6em; display: block;}
     input, select, textarea {
-      width: 100%;
+      width: calc(100% - 2*var(--sidepad));
+      margin-left: var(--sidepad); margin-right: var(--sidepad);
       margin-bottom: 17px;
       border-radius: var(--radius);
       font-size: 1.1rem;
@@ -36,61 +41,75 @@
     }
     textarea { min-height: 80px;}
     .btn-primary {
-      width: 100%;
-      background: var(--blue);
-      color: white;
-      padding: 14px 0;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 1.18rem;
-      font-weight: 700;
-      margin-top: 17px;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 8px #0054a622;
-      cursor: pointer;
-      transition: background .13s;
+      width: calc(100% - 2*var(--sidepad));
+      margin-left: var(--sidepad); margin-right: var(--sidepad);
+      background: var(--blue); color: white; padding: 14px 0; border: none;
+      border-radius: var(--radius); font-size: 1.18rem; font-weight: 700;
+      margin-top: 17px; margin-bottom: 8px;
+      box-shadow: 0 2px 8px #0054a622; cursor: pointer; transition: background .13s;
     }
     .btn-primary:active { background: #003366; }
     .btn-secondary {
+      width: calc(100% - 2*var(--sidepad));
+      margin-left: var(--sidepad); margin-right: var(--sidepad);
       background: var(--gray); color: var(--blue); border: 1.5px solid #B0C6E8;
-      font-weight: 600; padding: 14px 0; width: 100%;
-      border-radius: var(--radius); margin-bottom: 8px; cursor: pointer;
+      font-weight: 600; padding: 14px 0; border-radius: var(--radius); margin-bottom: 8px; cursor: pointer;
     }
     .receipt-list { background: var(--gray); margin-bottom: 16px; border-radius: var(--radius); padding: 12px 5px;}
-    .receipt { background: #fff; border-radius: var(--radius); box-shadow: 0 1px 6px #0054A622; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 1.02rem;}
-    .popup, .modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; background: #fff; border-radius: var(--radius); box-shadow: 0 6px 32px #0054A644; padding: 20px; transform: translate(-50%, -50%); z-index: 100; animation: modalIn .18s; }
+    .receipt { background: #fff; border-radius: var(--radius); box-shadow: 0 1px 6px #0054A622; padding: 10px 12px;
+      margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 1.02rem;}
+    .popup, .modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; background: #fff;
+      border-radius: var(--radius); box-shadow: 0 6px 32px #0054A644; padding: 20px;
+      transform: translate(-50%, -50%); z-index: 100; animation: modalIn .18s;}
     @keyframes modalIn { 0% { opacity: 0; transform:scale(0.96) translate(-50%,-50%);} 100% {opacity: 1;transform:scale(1) translate(-50%,-50%);} }
     .overlay, .modal-bg { background: #0054A622; position: fixed; inset: 0; z-index: 99;}
     .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 1.04rem; margin-bottom: 14px;}
     input[type="checkbox"] { width: 22px; height: 22px; margin: 0; accent-color: var(--blue);}
-    video { width: 100%; border-radius: var(--radius); background: var(--gray); margin-bottom: 18px; display: block;}
+    video { width: calc(100% - 2*var(--sidepad)); margin-left: var(--sidepad); margin-right: var(--sidepad);
+      border-radius: var(--radius); background: var(--gray); margin-bottom: 18px; display: block;}
     .picker-label { font-weight: 600; color: var(--blue); margin-bottom: 10px; margin-top: 14px; display: block;}
-    .picker-input { font-size: 1.16rem; border-radius: var(--radius); padding: 16px; border: 1.5px solid #B0C6E8; background: var(--gray); cursor: pointer; text-align: left; color: #222; margin-bottom: 21px; margin-top: 6px; transition: border 0.15s; user-select: none;}
+    .picker-input { font-size: 1.16rem; border-radius: var(--radius); padding: 16px; border: 1.5px solid #B0C6E8;
+      background: var(--gray); cursor: pointer; text-align: left; color: #222; margin-bottom: 21px; margin-top: 6px;
+      transition: border 0.15s; user-select: none; width: calc(100% - 2*var(--sidepad));
+      margin-left: var(--sidepad); margin-right: var(--sidepad);}
     .picker-input:active, .picker-input:focus { border-color: #0054A6; }
-    .picker-modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; padding: 0 0 16px 0; background: #fff; border-radius: var(--radius); box-shadow: 0 6px 32px #0054A684; transform: translate(-50%, -50%); z-index: 100; display: flex; flex-direction: column; align-items: stretch; animation: modalIn .19s;}
+    .picker-modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; padding: 0 0 16px 0;
+      background: #fff; border-radius: var(--radius); box-shadow: 0 6px 32px #0054A684;
+      transform: translate(-50%, -50%); z-index: 100; display: flex; flex-direction: column; align-items: stretch;
+      animation: modalIn .19s;}
     .picker-wheel-wrap { flex: 1 1 auto; height: 248px; overflow: hidden; position: relative; margin-top:0;}
     .picker-wheel { height: 100%; overflow-y: scroll; overscroll-behavior: contain; scroll-behavior: smooth;}
     .picker-list { margin: 0; padding: 0; list-style: none; min-height: 100%;}
-    .picker-item { height: 48px; line-height: 48px; font-size: 1.22rem; text-align: center; cursor: pointer; color: #174699; border-radius: 10px; user-select: none; transition: background .16s, color .16s; margin: 0 18px;}
+    .picker-item { height: 48px; line-height: 48px; font-size: 1.22rem; text-align: center; cursor: pointer;
+      color: #174699; border-radius: 10px; user-select: none; transition: background .16s, color .16s;
+      margin: 0 18px;}
     .picker-item.selected { background: #0054A6; color: #fff; font-weight: bold;}
-    .picker-highlight { position: absolute; left: 0; right: 0; top: 100px; height: 48px; border-radius: 12px; pointer-events: none; border: 2px solid #0054A6; box-sizing: border-box; background: rgba(0,84,166, 0.06); z-index: 9;}
+    .picker-highlight { position: absolute; left: 0; right: 0; top: 100px; height: 48px; border-radius: 12px;
+      pointer-events: none; border: 2px solid #0054A6; box-sizing: border-box; background: rgba(0,84,166, 0.06); z-index: 9;}
     .picker-actions { padding: 18px 28px 0 28px; display: flex; justify-content: flex-end; align-items: center;}
-    .picker-close { font-size: 1.09rem; background: #555a62; color: #fff; border: none; border-radius: 11px; padding: 9px 28px; cursor: pointer; font-weight: 600; margin-left: 4px; transition: background .2s;}
+    .picker-close { font-size: 1.09rem; background: #555a62; color: #fff; border: none; border-radius: 11px;
+      padding: 9px 28px; cursor: pointer; font-weight: 600; margin-left: 4px; transition: background .2s;}
     .picker-close:hover { background: #003366; }
     @media (max-width:430px) { .picker-modal, .modal {width:98vw;} }
-    .linkbtn { color: #0054A6 !important; text-decoration: underline; font-weight: 500; background:none; border:0; cursor:pointer; font-size:1em; padding:0;}
+    .linkbtn { color: #0054A6 !important; text-decoration: underline; font-weight: 500; background:none; border:0;
+      cursor:pointer; font-size:1em; padding:0;}
     /* iOS Date picker style */
-    .date-modal { position: fixed; left:50%; top:50%; width: 350px; max-width:96vw; background: #fff; border-radius:20px; box-shadow:0 8px 32px rgba(0,80,165,0.24); padding:20px 0 16px 0; transform:translate(-50%,-50%); z-index:101; display:flex; flex-direction:column; animation: pickerpop .19s;}
+    .date-modal { position: fixed; left:50%; top:50%; width: 350px; max-width:96vw; background: #fff;
+      border-radius:20px; box-shadow:0 8px 32px rgba(0,80,165,0.24); padding:20px 0 16px 0;
+      transform:translate(-50%,-50%); z-index:101; display:flex; flex-direction:column; animation: pickerpop .19s;}
     @keyframes pickerpop { 0%{opacity:.0;transform:scale(0.96) translate(-52%,-52%);} 100%{opacity:1;transform:scale(1) translate(-50%,-50%);} }
     .date-wheel-row { display:flex; align-items: stretch; justify-content:center; gap:16px; margin-bottom:0;}
     .date-wheel-col { flex:1 1 0; min-width:80px; position:relative;}
     .date-wheel-wrap { height: 160px; overflow:hidden; position:relative;}
     .date-wheel { height:100%; overflow-y:scroll; scroll-behavior:smooth; }
-    .date-item { height: 40px; line-height:40px; text-align:center; font-size:1.17em; color:#174699; background:#fff; cursor:pointer; transition:background .14s, color .14s; margin:0 6px; border-radius:10px;}
+    .date-item { height: 40px; line-height:40px; text-align:center; font-size:1.17em; color:#174699;
+      background:#fff; cursor:pointer; transition:background .14s, color .14s; margin:0 6px; border-radius:10px;}
     .date-item.selected { background: #0054A6; color:#fff; font-weight:bold;}
-    .date-highlight { position:absolute; left:0;right:0;top:60px;height:40px; border-radius:8px; pointer-events: none; border:2px solid #0054A6; background:rgba(0,84,166,0.06);z-index:9;}
+    .date-highlight { position:absolute; left:0;right:0;top:60px;height:40px; border-radius:8px; pointer-events: none;
+      border:2px solid #0054A6; background:rgba(0,84,166,0.06);z-index:9;}
     .date-actions { padding:12px 20px 0 20px; text-align:right;}
-    .date-close { font-size:1.06em; background:#555a62; color:#fff; border-radius:8px; border:none; padding:8px 22px; cursor:pointer;}
+    .date-close { font-size:1.06em; background:#555a62; color:#fff; border-radius:8px; border:none; padding:8px 22px;
+      cursor:pointer;}
     .date-close:hover {background:#003366;}
     @media (max-width:430px){.date-modal{width:98vw;} .date-wheel-row{gap:5px;}}
   </style>
@@ -100,7 +119,6 @@
   <div class="app-header">Local Grey</div>
   <div id="flow"></div>
 </div>
-<!-- Modal backgrounds for popups/pickers -->
 <div id="modalBg" class="modal-bg" style="display:none"></div>
 <script>
 /* --- App State --- */
@@ -117,7 +135,6 @@ const state = {
   needAssistant: false,
   assistantApproved: false
 };
-
 /* --- Language Picker Wheel --- */
 const languages = [
   "English", "Mandarin", "Hindi", "Spanish", "French",
@@ -193,12 +210,10 @@ function showPickerWheel(current, callback) {
   modalBg.onclick = close;
   function close(){ document.body.removeChild(modal); modalBg.style.display="none";document.getElementById('langPickerField').focus(); }
 }
-
 /* --- iOS-style Date Picker Wheel --- */
 function showDatePicker(current, callback) {
   const modalBg = document.getElementById("modalBg");
   modalBg.style.display = "block";
-  // Date data: yyyy-mm-dd
   let now = new Date();
   let val = current?.split('-')||[];
   let y = Number(val[0])||now.getFullYear();
@@ -207,14 +222,12 @@ function showDatePicker(current, callback) {
   let years=[],months=[],days=[];
   for(let i=now.getFullYear()-1;i<=now.getFullYear()+3;i++) years.push(i);
   for(let i=1;i<=12;i++) months.push(i);
-  // for day wheel, update function
   function updateDays(yy,mm) {
     let lastDay = new Date(yy,mm,0).getDate();
     days = [];
     for(let i=1;i<=lastDay;i++) days.push(i);
   }
   updateDays(y, m);
-  // HTML:
   const modal = document.createElement('div');
   modal.className = "date-modal";
   modal.innerHTML = `
@@ -244,7 +257,6 @@ function showDatePicker(current, callback) {
     </div>
   `;
   document.body.appendChild(modal);
-  // Scroll/selection per wheel
   const yearsList = modal.querySelector('.date-years'), monthsList = modal.querySelector('.date-months'), daysList = modal.querySelector('.date-days');
   const wheels = modal.querySelectorAll('.date-wheel');
   const itemHeight = 40;
@@ -261,9 +273,7 @@ function showDatePicker(current, callback) {
     if(idx<0) idx=0; if(idx>arr.length-1) idx=arr.length-1;
     Array.from(list.children).forEach((li, i)=>li.classList.toggle('selected', i===idx));
   }
-  // Snap to initial values
   setTimeout(() => { snapWheel(yearsList, years, y); snapWheel(monthsList, months, m); snapWheel(daysList, days, d); },30);
-  // Enable wheel snapping, scroll, momentum per column
   ['years','months','days'].forEach((what, wi)=>{
     const arr = what==='years'?years:what==='months'?months:days;
     const list = modal.querySelector('.date-'+what);
@@ -277,7 +287,6 @@ function showDatePicker(current, callback) {
     wheel.addEventListener('wheel',e=>{if(wheelTimeout)clearTimeout(wheelTimeout);wheelTimeout=setTimeout(()=>{let idx=Math.round(wheel.scrollTop/itemHeight);wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(list,arr,arr[idx]);},80);});
     list.onclick = e=>{if(e.target.classList.contains('date-item')){let idx=Array.from(list.children).indexOf(e.target);wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(list,arr,arr[idx]);}};
   });
-  // Update DAYS wheel on year/month change (for leap years/30/31 days!)
   modal.querySelectorAll('.date-months .date-item,.date-years .date-item').forEach(it=>{
     it.onclick = ()=>{
       let idxY = Array.from(yearsList.children).findIndex(li=>li.classList.contains('selected'));
@@ -288,9 +297,7 @@ function showDatePicker(current, callback) {
       snapWheel(daysList,days,days[0]);
     }
   });
-  // Choose event
   modal.querySelector('#dateSelectBtn').onclick = ()=>{
-    // Gather picked values
     let idxY = Array.from(yearsList.children).findIndex(li=>li.classList.contains('selected'));
     let idxM = Array.from(monthsList.children).findIndex(li=>li.classList.contains('selected'));
     let idxD = Array.from(daysList.children).findIndex(li=>li.classList.contains('selected'));
@@ -302,7 +309,6 @@ function showDatePicker(current, callback) {
   modalBg.onclick = close;
   function close(){document.body.removeChild(modal); modalBg.style.display="none";}
 }
-
 /* --- PDF Step-by-step Flow --- */
 function render() {
   const $flow = document.getElementById("flow");
@@ -466,7 +472,6 @@ function render() {
     `;
   }
   $flow.innerHTML = html;
-
   // Attach event listeners for each step
   switch(state.step) {
     case 0:
@@ -503,7 +508,6 @@ function render() {
       document.getElementById('iosDateField').onkeydown = function(e){ if (e.key===' '||e.key==='Enter') showDatePicker(state.residence.departure, date => { state.residence.departure = date; render(); });}
       document.getElementById('residenceNextBtn').onclick = () => {
         state.residence.country = document.getElementById('residenceCountry').value;
-        // get date from state.residence.departure
         state.step++; render();
       }
       break;
