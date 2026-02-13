@@ -2,162 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Local Grey Kiosk (UI, BG Blue, Responsive, QR, Video)</title>
+  <title>Local Grey Kiosk (Blue BG, Responsive, QR, Modern)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     :root {
-      --blue: #0063b0; /* Match the next button and BG in your screenshot */
-      --header-grey: #5a5d64;
-      --selector-bg: #f2f2f3;
+      --blue: #035CB1;
+      --header-grey: #5A5D64;
+      --header-radius: 36px;
+      --card-radius: 28px;
     }
     html, body {
-      background: var(--blue);
+      background: var(--blue) !important;
       min-height: 100vh;
       margin: 0;
+      box-sizing: border-box;
     }
     body {
       font-family: "SF Pro Display", Arial, sans-serif;
       color: #222a32;
-      min-height: 100vh;
-      box-sizing: border-box;
     }
-    .outer-container {
+    .responsive-outer {
       min-height: 100vh;
-      width: 100vw;
+      padding: 28px 10px 10px 10px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 40px 0 0 0;
       background: var(--blue);
     }
-    .main-card {
-      background: #fff;
-      border-radius: 36px;
-      max-width: 900px;
+    .app-container {
       width: 100%;
-      min-height: 520px;
+      max-width: 940px;
+      background: #fff;
+      border-radius: var(--header-radius);
+      box-shadow: 0 6px 36px #0033662a, 0 1.5px 4px #555a6211;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 8px 40px #0054a622;
-      position: relative;
-      margin: 0 10px 30px 10px;
-      overflow: hidden;
+      min-height: 0;
     }
-    .header-bar {
+    .app-header {
       background: var(--header-grey);
+      color: #fff;
       padding: 36px 0 28px 0;
       text-align: center;
-      border-radius: 36px 36px 0 0;
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       font-weight: bold;
-      color: #fff;
       letter-spacing: .02em;
+      border-radius: var(--header-radius) var(--header-radius) 0 0;
     }
-    .form-area {
-      flex: 1 1 auto;
-      padding: 58px 62px 52px 62px;
+    .screen {
+      width: 100%;
+      background: #fff;
+      border-radius: 0 0 var(--header-radius) var(--header-radius);
+      box-sizing: border-box;
+      padding: 42px 38px 38px 38px;
+      min-height: 440px;
       display: flex;
       flex-direction: column;
-      align-items: stretch;
-      background: #fff;
+      gap: 0.4em;
     }
-    @media (max-width:900px) {
-      .main-card { max-width: 99vw; }
-      .form-area { padding: 36px 14px 28px 14px; }
-      .header-bar { font-size: 2rem; }
-    }
-    @media (max-width:540px) {
-      .main-card, .form-area, .header-bar { border-radius: 0; }
-      .form-area { padding: 10vw 3vw 10vw 3vw; }
-    }
-    label, .form-area label {
-      font-weight: bold;
+    h2 {
+      margin: 0 0 28px 0;
+      font-size: 2rem;
       color: var(--blue);
-      margin: 0 0 8px 0;
-      display: block;
-      font-size: 1.07em;
+      font-weight: 700;
     }
     .card {
       background: #e6f0fa;
-      border-radius: 18px;
-      padding: 18px 19px 14px 20px;
+      border-radius: var(--card-radius);
+      padding: 19px 21px 17px 21px;
       margin: 0 0 30px 0;
-      font-size: 1.09rem;
+      font-size: 1.13rem;
       box-shadow: 0 2px 11px #0054a613;
     }
-    .btn-main {
-      margin-top: 56px;
-      margin-bottom: 23px;
+    ul { padding-left: 27px; margin: 0 0 12px 0;}
+    .elig { font-weight: bold; margin-top:10px; margin-bottom: 5px; }
+    label { font-weight: 600; color: #033c73; margin-top:1.3em; margin-bottom:.53em; display: block;}
+    .input-row {margin-bottom:21px;}
+    .input-label {margin-bottom: 9px; font-weight: 700; color: var(--blue); display:block;}
+    input, select, textarea, .picker-input {
+      width: 100%; min-width:0; box-sizing: border-box;
+      padding: 20px;
+      font-size: 1.15rem;
+      border: 1.5px solid #b8c7d8;
+      border-radius: 16px; margin-bottom: 7px;
+      transition: border .14s;
+      background: #f7f7f7;
+    }
+    input:focus, select:focus, textarea:focus, .picker-input:focus { border-color: var(--blue); background: #e6f0fa;}
+    textarea {min-height: 74px;}
+    .btn-primary, .btn-secondary {
+      display: block; width: 100%; border: none;
+      border-radius: 21px;
+      padding: 22px 0;
+      font-size: 1.35rem; font-weight: 800; letter-spacing:0.02em; box-shadow: 0 2px 8px #003a7010;
+      transition: background .15s, box-shadow .15s;
+      margin-top: 42px;
+    }
+    .btn-primary {
       background: var(--blue);
       color: #fff;
-      border: none;
-      width: 100%;
-      padding: 26px 10px;
-      font-size: 2rem;
-      font-weight: bold;
-      border-radius: 28px;
-      box-shadow: 0 2px 18px #00336623;
-      cursor: pointer;
-      transition: background .14s,box-shadow.17s;
-      letter-spacing: 0.03em;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 28px #003b7b19;
     }
-    .btn-main:active { background: #00549c;}
-    .selector-group {
-      background: #f1f2f7;
-      border: 1.5px solid #c3c6cc;
-      border-radius: 18px;
-      padding: 0;
-      min-height: 65px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 32px;
-      transition: border-color .15s;
-      box-sizing: border-box;
+    .btn-primary:active { background: #003366; }
+    .btn-secondary {
+      background:#fff;
+      color: var(--blue);
+      border: 2px solid var(--blue);
+      box-shadow: none;
+      margin-top: 0;
+      margin-bottom: 13px;
     }
-    .lang-picker-text, .date-picker-text {
-      flex:1;
-      font-size: 1.25em;
-      color: #242a3d;
-      font-weight: bold;
-      padding: 20px 16px 20px 21px;
-      border: none;
-      background: transparent;
-      outline: none;
-      user-select: none;
-      text-align: left;
-      letter-spacing:0.01em;
-    }
-    .lang-arrow, .date-arrow {
-      font-size: 2rem;
-      color: #0859a5;
-      margin-right: 13px;
-      user-select: none;
-      pointer-events: none;
-    }
-    .selector-group:focus-within, .selector-group.active {
-      border-color: var(--blue);
-      background: #eef4fe;
-    }
-    .form-group {width:100%;margin-bottom:25px;}
-    input, select, textarea {width: 100%;font-size:1.17em;min-width:0;box-sizing:border-box;border-radius:14px;border:1.5px solid #b8c7da;padding:16px 18px;background-color:#fafbfc;}
-    /* Video full width below header, above continue btn */
-    .form-area video {
+    /* Video: always fills screen width as next button! */
+    .screen video {
       display: block;
       width: 100%;
       height: auto;
       min-width: 0;
-      margin: 0 0 27px 0;
-      border-radius: 18px;
+      margin: 0 0 22px 0;
+      border-radius: 16px;
       box-sizing: border-box;
-      background: #f2f5fa;
-      outline:none;
+      background: #f4f6f9;
     }
+    /* receipts */
     .receipt-list {
       background: #f4f6f9;
-      border-radius: 17px;
+      border-radius: 22px;
       padding: 14px 10px 8px 10px;
       margin-bottom: 17px;
     }
@@ -165,139 +136,125 @@
       background: #fff;
       border-radius: 13px;
       box-shadow: 0 1px 6px #0054A622;
-      padding: 11px 18px;
-      margin-bottom: 12px;
+      padding: 13px 18px;
+      margin-bottom: 13px;
       display:flex;justify-content:space-between; align-items:center;font-size:1.09rem;
     }
-    .show-more-receipts {
-      color: var(--blue);
-      background:transparent;
-      border:none;
-      font-weight:600;
-      font-size:1.13rem;
-      text-align:left;
-      margin:10px 0 0 0;
-      cursor:pointer;
-      width:100%;
-      padding:8px 0 17px 7px;
+    .show-more-receipts { 
+      color:var(--blue); background:transparent; border:none; font-weight:600; font-size:1.13rem;
+      text-align:left; margin:10px 0 0 0; cursor:pointer; width:100%; padding:8px 0 17px 7px;
     }
-    /* Modal overlays - always on top, centered */
+    /* Modal overlays - always on top */
     .modal-bg,.overlay {background:rgba(0,50,140,.13);position:fixed;top:0;left:0;right:0;bottom:0;z-index: 10010;}
     .popup,.modal,.picker-modal,.qr-modal,.date-modal {
       position:fixed;z-index:10020;left:50%;top:50%;transform:translate(-50%,-50%);
       background:#fff;border-radius:18px;box-shadow:0 6px 38px #0054A661;
-      padding:36px 29px 34px 29px;max-width:99vw;min-width:300px;
+      padding:33px 32px 29px 32px;max-width:99vw;min-width:335px;
       min-height:120px;
     }
     #reader>video, .qr-modal video { border-radius: 14px !important;}
-    .qr-close {background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:1.20em;font-weight:700;padding:12px 37px;margin-top:18px;cursor:pointer;margin-bottom:0;}
+    .qr-close {background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:1.21em;font-weight:700;padding:11px 37px;margin-top:18px;cursor:pointer;margin-bottom:0;}
     .qr-close:hover {background:#003366;}
+    @media (min-width:1000px){
+      .app-container{max-width: 928px;}
+      .screen {padding:54px 135px 36px 135px;}
+      .card {margin:0 0 38px 0;}
+    }
+    @media (max-width:700px) {
+      .responsive-outer, .app-container, .screen,.popup,.modal { border-radius:0; }
+      .responsive-outer{padding:0;}
+      .app-header{border-radius:0;}
+      .card,.receipt-list{padding-left:6px;padding-right:6px;}
+      .screen{padding:14px 0 12px 0;}
+      .btn-primary, .btn-secondary { padding: 18px 0; margin-top:29px;}
+    }
   </style>
 </head>
 <body>
-  <div class="outer-container">
-    <div class="main-card">
-      <div class="header-bar">Local Grey</div>
-      <div class="form-area" id="ui-content">
-        <!-- JavaScript will populate actual form steps here -->
-      </div>
+  <div class="responsive-outer">
+    <div class="app-container">
+      <div class="app-header">Local Grey</div>
+      <div id="flow"></div>
     </div>
   </div>
   <div id="modalBg" class="modal-bg" style="display:none"></div>
   <script>
-/* --- Demo Data/State and Renderer Setup --- */
-const workflow = [
-  {
-    render: (state)=>`
-      <label>Select your language</label>
-      <div class="selector-group" tabindex="0" id="langPickerBtn">
-        <span class="lang-picker-text">${state.language}</span>
-        <span class="lang-arrow">&#9662;</span>
-      </div>
-      <button class="btn-main" id="langNextBtn">Next</button>`,
-    after: (state)=>{
-      document.getElementById('langPickerBtn').onclick = ()=>{
-        showPickerModal(state.language,v=>{ state.language=v; renderStep(); });
-      };
-      document.getElementById('langNextBtn').onclick=()=>{
-        activeStep++;
-        renderStep();
-      }
-    }
-  },
-  {
-    render: ()=>`
-      <h2>Have your documents ready</h2>
-      <div class="card">
-        <ul>
-          <li>Passport or ID</li>
-          <li>Sales Receipts</li>
-          <li>Credit Card or eWallet</li>
-        </ul>
-        <span class="elig">Eligibility:</span>
-        <ul>
-          <li>16 years old or older</li>
-          <li>Not a European Union resident</li>
-          <li>Get Customs validation within 3 months of issuance</li>
-        </ul>
-      </div>
-      <button class="btn-main" id="docNextBtn">Next</button>`,
-    after: ()=>document.getElementById('docNextBtn').onclick=()=>{activeStep++;renderStep();}
-  },
-  {
-    render: (state)=>`
-      <h2>Passport/ID Scanning</h2>
-      <video id="passportVideo" controls autoplay playsinline muted poster="https://dummyimage.com/900x290/cccccc/222222&text=Passport+Scan">
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
-      </video>
-      <div class="input-label" style="margin-top:18px;">Type your Passport or ID number</div>
-      <input class="input" id="passportInput" type="text" placeholder="Passport or ID Number" value="${state.passport || ''}" autocomplete="off"/>
-      <button type="button" id="qrbtn" class="btn-secondary">Scan QR code</button>
-      <button class="btn-main" id="passportNextBtn">Continue</button>`,
-    after: (state)=>{
-      document.getElementById('passportNextBtn').onclick = () => {
-        state.passport = document.getElementById('passportInput').value.trim();
-        state.traveler = {...state.traveler, passport: state.passport};
-        activeStep++; renderStep();
-      };
-      document.getElementById('qrbtn').onclick = function(){
-        showQrModal(code=>{
-          state.passport = code;
-          state.qrData = code;
-          renderStep();
-          setTimeout(()=>{document.getElementById('passportInput').value=state.passport;},80);
-        });
-      };
-      // Play on user interaction
-      setTimeout(()=>{try{document.getElementById('passportVideo').play();}catch(e){}},300);
-    }
-  },
-  // ...add other steps as in your full flow, similar to above...
-];
-
-// Language modal: fully native looking
-const languages = ["English","Mandarin","Hindi","Spanish","French","Arabic","Bengali","Russian","Portuguese","Urdu",
-  "Indonesian","German","Japanese","Swahili","Marathi","Telugu","Turkish","Korean","Vietnamese","Italian"];
-function showPickerModal(curr, cb) {
-  const modalBg = document.getElementById('modalBg'); modalBg.style.display="block";
-  let idx = languages.indexOf(curr); if(idx<0)idx=0;
+const state = {
+  step: 0,
+  language: "English",
+  passport: "",
+  qrData: "",
+  traveler: { name: "", address: "", email: "", passport: "" },
+  residence: { country: "", departure: "" },
+  memberEmail: "",
+  receipts: [
+    {number: '12345', amount: 150, store: 'PRINTEMPS'},
+    {number: '23456', amount: 87, store: 'Lafayette'},
+    {number: '42407', amount: 224, store: 'ZARA'},
+    {number: '59234', amount: 54, store: 'Carrefour'},
+    {number: '13090', amount: 68, store: 'Starbucks'},
+    {number: '99123', amount: 300, store: 'Galeries'},
+    {number: '77222', amount: 25, store: 'Uniqlo'},
+    {number: '81654', amount: 178, store: 'Apple Store'}
+  ],
+  refund: "",
+  agreed: false,
+  needAssistant: false,
+  assistantApproved: false,
+  receiptsShowAll: false
+};
+const languages = ["English","Mandarin","Hindi","Spanish","French","Arabic","Bengali","Russian","Portuguese","Urdu","Indonesian","German","Japanese","Swahili","Marathi","Telugu","Turkish","Korean","Vietnamese","Italian"];
+function showPickerWheel(current, callback) {
+  const modalBg = document.getElementById("modalBg"); modalBg.style.display = "block";
+  let idx = languages.indexOf(current); if(idx<0)idx=0;
   const modal = document.createElement('div');
-  modal.className='picker-modal';
-  modal.innerHTML = `<h3 style="margin-bottom:18px;">Select your language</h3>
-    <div style="height:200px;overflow-y:scroll;">
-    ${languages.map((lang,i)=>`<div style="padding:15px;font-size:1.17em;border-radius:9px;margin:2px 0;cursor:pointer;background:${i==idx?'#eef6ff':'#fff'};color:${i==idx?'#065ca1':'#233'};" data-i="${i}">${lang}</div>`).join('')}
+  modal.className = "picker-modal";
+  modal.innerHTML = `
+    <h3 style="margin-bottom:18px;">Select your language</h3>
+    <div style="height:212px;overflow:hidden;position:relative;">
+      <div style="height:38px;width:100%;border-radius:10px;position:absolute;left:0;top:97px;border:2px solid #0054A6;background:rgba(0,84,166,.07);z-index:2;"></div>
+      <div style="height:212px;overflow-y:scroll;scroll-behavior:smooth;">
+      <ul style="list-style:none;padding:0;margin:0;">
+      ${languages.map((lang, i) => `<li class="picker-item${i==idx?' selected':''}" data-idx="${i}" style="height:38px;line-height:38px;text-align:center;cursor:pointer;font-size:1.12em;color:#174699;margin:0 8px;border-radius:8px;">${lang}</li>`).join('')}
+      </ul>
+      </div>
     </div>
-    <button class="btn-main" style="margin-top:18px;margin-bottom:3px;font-size:1.1em;" id="pickLangBtn">OK</button>`;
+    <button class="btn-primary" style="margin-top:20px;margin-bottom:3px;" id="pickLangBtn">OK</button>
+  `;
   document.body.appendChild(modal);
-  let picked = idx;
-  Array.from(modal.querySelectorAll('[data-i]')).forEach(el=>{
-    el.onclick=e=>{
-      picked=+el.dataset.i;
-      Array.from(modal.querySelectorAll('[data-i]')).forEach(o=>o.style.background='#fff');
-      el.style.background='#eef6ff';
-    }
-  });
-  modal.querySelector('#pickLangBtn').onclick = ()=>{cb(languages[picked]); cls();}
+  const items = modal.querySelectorAll('.picker-item');
+  const wheel = modal.querySelector('div[style*="overflow-y:scroll"]');const h=38;
+  let pickIdx = idx;
+  setTimeout(()=>{wheel.scrollTop=idx*h;hl();},20);
+  function hl(x){let idx=Math.round(wheel.scrollTop/h);if(idx<0)idx=0;if(idx>languages.length-1)idx=languages.length-1;items.forEach((it,i)=>it.classList.toggle('selected',i==idx));pickIdx = idx;}
+  wheel.addEventListener('scroll',()=>{hl();});
+  modal.querySelector('ul').onclick=e=>{if(e.target.classList.contains('picker-item')){pickIdx=Number(e.target.dataset.idx);hl(true,true)}};
+  modal.querySelector('#pickLangBtn').onclick=()=>{callback(languages[pickIdx]);cls();}
+  function cls(){document.body.removeChild(modal);modalBg.style.display="none";document.getElementById('langPickerBtn')?.focus();}
+  modalBg.onclick=cls;
+}
+function showDatePicker(current, callback) {
+  const modalBg=document.getElementById("modalBg");modalBg.style.display="block";
+  let now=new Date(),v=(current||'').split('-');let y=+v[0]||now.getFullYear(),m=+v[1]||now.getMonth()+1,d=+v[2]||now.getDate();
+  let years=[],months=[],days=[];for(let i=now.getFullYear()-1;i<=now.getFullYear()+3;i++) years.push(i);for(let i=1;i<=12;i++) months.push(i);
+  function updateDays(yy,mm){days=[];for(let i=1;i<=new Date(yy,mm,0).getDate();i++)days.push(i);}
+  updateDays(y,m);
+  const modal=document.createElement('div');modal.className="picker-modal";
+  modal.innerHTML=`
+    <h3 style="margin-bottom:18px">Select departure date</h3>
+    <div style="display:flex;gap:15px;justify-content:center;">
+      <div style="flex:1;min-width:60px;"><div style="height:120px;overflow-y:scroll;"><ul class="date-years">${years.map(yy=>`<li class="date-item${yy===y?' selected':''}" data-val="${yy}">${yy}</li>`).join('')}</ul></div></div>
+      <div style="flex:1;min-width:60px;"><div style="height:120px;overflow-y:scroll;"><ul class="date-months">${months.map(mm=>`<li class="date-item${mm===m?' selected':''}" data-val="${mm}">${String(mm).padStart(2,'0')}</li>`).join('')}</ul></div></div>
+      <div style="flex:1;min-width:60px;"><div style="height:120px;overflow-y:scroll;"><ul class="date-days">${days.map(dd=>`<li class="date-item${dd===d?' selected':''}" data-val="${dd}">${String(dd).padStart(2,'0')}</li>`).join('')}</ul></div></div>
+    </div>
+    <button class="btn-primary" style="margin-top:18px;" id="pickDateBtn">OK</button>
+  `;
+  document.body.appendChild(modal);
+  function findIdx(list){return Array.from(list.children).findIndex(li=>li.classList.contains('selected'));}
+  modal.querySelector('#pickDateBtn').onclick=()=>{
+    let idxY=findIdx(modal.querySelector('.date-years')),idxM=findIdx(modal.querySelector('.date-months')),idxD=findIdx(modal.querySelector('.date-days'));
+    callback(`${years[idxY]}-${String(months[idxM]).padStart(2,'0')}-${String(days[idxD]).padStart(2,'0')}`);cls();
+  };
   function cls(){document.body.removeChild(modal);modalBg.style.display="none";}
   modalBg.onclick=cls;
 }
@@ -306,7 +263,7 @@ function showQrModal(onScan) {
   const modalBg=document.getElementById("modalBg");modalBg.style.display="block";
   let qrdiv = document.createElement("div");
   qrdiv.className = "qr-modal";
-  qrdiv.innerHTML = `<div id="reader" style="width:99vw;max-width:320px"></div><button class="qr-close" id="qrCloseBtn">Close</button>`;
+  qrdiv.innerHTML = `<div id="reader" style="width:99vw;max-width:320px"></div><button class="qr-close" id="qrCloseBtn">Close</button><div id="qrMsg" style="text-align:center;font-size:1.11em;color:#0054A6;margin-top:7px;"></div>`;
   document.body.appendChild(qrdiv);
   let qr=new Html5Qrcode("reader");
   qr.start({facingMode:"environment"},{fps:10,qrbox:220},code=>{
@@ -318,13 +275,254 @@ function showQrModal(onScan) {
   document.getElementById('qrCloseBtn').onclick=()=>{qr.stop();document.body.removeChild(qrdiv);modalBg.style.display="none";}
   modalBg.onclick=()=>{qr.stop();document.body.removeChild(qrdiv);modalBg.style.display="none";}
 }
-let activeStep = 0;
-function renderStep() {
-  const stateClone = {...state};
-  document.getElementById("ui-content").innerHTML = workflow[activeStep].render(stateClone);
-  workflow[activeStep].after(stateClone);
+function showPopup(title, html) {
+  const modalBg = document.getElementById("modalBg");
+  modalBg.style.display = "block";
+  const popup=document.createElement("div");
+  popup.className="popup";
+  popup.innerHTML = `<h3 style="margin-top:0;margin-bottom:15px">${title}</h3><div style="margin-bottom:22px">${html}</div><button class="btn-primary" id="closePopupBtn" style="margin-top:10px">Close</button>`;
+  document.body.appendChild(popup);
+  document.getElementById("closePopupBtn").onclick = close;
+  modalBg.onclick=close;
+  function close() { document.body.removeChild(popup); modalBg.style.display="none";}
 }
-renderStep();
+window.showReceipt=function(i){
+  const r=state.receipts[i],modalBg=document.getElementById("modalBg");modalBg.style.display="block";
+  const popup=document.createElement("div");
+  popup.className="popup";
+  popup.innerHTML=`<h3 style="margin-top:0">Receipt #${r.number}</h3><table>
+  <tr><td>Store:</td><td>${r.store}</td></tr>
+  <tr><td>Amount:</td><td>€${r.amount}</td></tr>
+  <tr><td>Goods:</td><td>Example Goods</td></tr>
+  <tr><td>Quantity:</td><td>1</td></tr>
+  </table><button class="btn-primary" id="closeReceiptBtn" style="margin-top:18px">Close</button>`;
+  document.body.appendChild(popup);
+  document.getElementById("closeReceiptBtn").onclick=cls;modalBg.onclick=cls;
+  function cls(){document.body.removeChild(popup);modalBg.style.display="none";}
+};
+function getSummaryText() {
+  return [
+    `Language: ${state.language}`,
+    `Name: ${state.traveler.name}`,
+    `Address: ${state.traveler.address}`,
+    `Email: ${state.traveler.email}`,
+    `Passport/ID: ${state.passport}`,
+    state.qrData ? `QR Scanned: ${state.qrData}` : "",
+    `Residence: ${state.residence.country}`,
+    `Departure: ${state.residence.departure}`,
+    `Refund: ${state.refund}`,
+    `Receipts: ${state.receipts.length}`
+  ].filter(Boolean).join('\n');
+}
+function render() {
+  let html = '', $flow = document.getElementById('flow');
+  if(state.step===0){
+    html=`
+      <div class="screen">
+        <label class="picker-label">Select your language</label>
+        <div class="input-row" style="margin-bottom:38px;">
+          <button id="langPickerBtn" class="picker-input" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+            <span id="langVal" style="font-weight:bold;color:#2a4873;">${state.language}</span>
+            <span aria-label="expand" style="font-size:1.6em;color:#255ba8;">&#9662;</span>
+          </button>
+        </div>
+        <button class="btn-primary" id="langNextBtn">Next</button>
+      </div>
+    `;
+  } else if(state.step===1){
+    html=`<div class="screen">
+      <h2>Have your documents ready</h2>
+      <div class="card">
+        <ul>
+          <li>Passport or ID</li><li>Sales Receipts</li><li>Credit Card or eWallet</li>
+        </ul>
+        <span class="elig">Eligibility:</span>
+        <ul>
+          <li>16 years old or older</li>
+          <li>Not a European Union resident</li>
+          <li>Get Customs validation within 3 months of issuance</li>
+        </ul>
+      </div>
+      <button class="btn-primary" id="docNextBtn">Next</button>
+    </div>`;
+  } else if(state.step===2){
+    html=`<div class="screen">
+      <h2>Passport/ID Scanning</h2>
+      <video controls autoplay playsinline muted poster="https://dummyimage.com/890x250/cccccc/222222&text=Passport+Scan">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
+      </video>
+      <div class="input-row" style="margin-top:18px;">
+        <label class="input-label" for="passportInput">Type your Passport or ID number</label>
+        <input id="passportInput" type="text" placeholder="Passport or ID Number" value="${state.passport || ''}" autocomplete="off"/>
+        <button id="qrbtn" type="button" class="btn-secondary" style="font-size:1.08em;">Scan QR code</button>
+      </div>
+      <button class="btn-primary" id="passportNextBtn">Continue</button>
+    </div>`;
+  } else if(state.step===3){
+    html=`<div class="screen">
+      <h2>Traveler Information</h2>
+      <input id="travelerName" type="text" placeholder="Full Name" value="${state.traveler.name||''}"/>
+      <input id="travelerAddress" type="text" placeholder="Address" value="${state.traveler.address||''}"/>
+      <input id="travelerEmail" type="email" placeholder="Email" value="${state.traveler.email||''}"/>
+      <input id="travelerPassport" type="text" placeholder="Passport/ID Number" value="${state.traveler.passport||state.passport||''}"/>
+      <button class="btn-primary" id="travelerNextBtn">Next</button>
+    </div>`;
+  } else if(state.step===4){
+    html=`<div class="screen">
+      <h2>Residence & Departure</h2>
+      <input id="residenceCountry" type="text" placeholder="Country of Residence" value="${state.residence.country||''}"/>
+      <div class="input-row" style="margin-top:8px;">
+        <button id="datePickerBtn" class="picker-input" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <span id="dateVal" style="font-weight:bold;color:#2a4873;">
+            ${state.residence.departure ? state.residence.departure : "Select departure date"}
+          </span>
+          <span aria-label="expand" style="font-size:1.6em;color:#255ba8;">&#128197;</span>
+        </button>
+      </div>
+      <button class="btn-primary" id="residenceNextBtn">Next</button>
+    </div>`;
+  } else if(state.step===5){
+    html=`<div class="screen">
+      <h2>Become a Member (optional)</h2>
+      <input id="memberEmail" type="email" placeholder="Email" value="${state.memberEmail||''}" />
+      <button class="btn-primary" id="membershipJoinBtn">Join</button>
+      <button class="btn-secondary" id="membershipSkipBtn">Skip</button>
+    </div>`;
+  } else if(state.step===6){
+    let N = state.receiptsShowAll ? state.receipts.length : 3;
+    let hasMore = state.receipts.length > N;
+    html=`<div class="screen">
+      <h2>Your Receipts</h2>
+      <div class="receipt-list" id="receiptsList">
+        ${state.receipts.slice(0,N).map((r,i)=>`<div class="receipt"><span>Receipt #${r.number}, €${r.amount}, Store: ${r.store}</span>
+        <button class="btn-secondary" style="width:auto;padding:4px 12px" onclick="window.showReceipt(${i})">View</button></div>`).join('')}
+        ${hasMore&&!state.receiptsShowAll?`<button class="show-more-receipts" id="showMoreBtn">Show all receipts (${state.receipts.length})</button>`:""}
+      </div>
+      <button class="btn-secondary" id="scanReceiptBtn">Scan New Receipt</button>
+      <button class="btn-primary" id="receiptsNextBtn">Next</button>
+    </div>`;
+  } else if(state.step===7){
+    html=`<div class="screen">
+      <h2>Choose Refund Method</h2>
+      <button class="btn-primary" id="refundCCBtn">Credit Card</button>
+      <button class="btn-primary" id="refundWalletBtn">Digital Wallet</button>
+      <button class="btn-primary" id="refundCashBtn">Cash</button>
+    </div>`;
+  } else if(state.step===8){
+    html=`<div class="screen">
+      <h2>Refund Instructions</h2>
+      <video controls autoplay playsinline muted poster="https://dummyimage.com/890x250/cccccc/222222&text=Refund+Instructions">
+        <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4"/>
+      </video>
+      <p>Refund by: <b>${state.refund||''}</b>. Please follow on-screen instructions to register your ${state.refund.toLowerCase()} for refund.</p>
+      <button class="btn-primary" id="refundNextBtn">Continue</button>
+    </div>`;
+  } else if(state.step===9){
+    html=`<div class="screen">
+      <h2>Summary & Traveler Declaration</h2>
+      <textarea readonly style="font-size:1.08em">${getSummaryText()}</textarea>
+      <label class="checkbox-label">
+        <input id="agreeCheck" type="checkbox" ${state.agreed?"checked":""}/>
+        I accept <button class="linkbtn" id="showTermsLink">Terms & Conditions</button> and <button class="linkbtn" id="showDeclarationLink">Traveler Declaration</button>
+      </label>
+      <button class="btn-primary" id="submitBtn">Submit</button>
+    </div>`;
+  } else if(state.step===10){
+    html=`<div class="screen"><h2>Assistance Required</h2>
+    <p>A shop assistant will help you soon.</p>
+    <input id="assistantInput" type="text" placeholder="Scan assistant QR code">
+    <div style="display:flex;gap:15px;margin-top:20px;">
+      <button class="btn-primary" id="approveBtn" style="flex:1">Approve</button>
+      <button class="btn-secondary" id="rejectBtn" style="flex:1">Reject</button>
+    </div></div>`;
+  } else if(state.step===11){
+    html=`<div class="screen">
+      <h2>Collect your Tax Free Form</h2>
+      <video controls autoplay playsinline muted poster="https://dummyimage.com/890x250/cccccc/222222&text=Tax+Free+Form">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
+      </video>
+      <div class="card">Remember to complete Customs validation at departure!</div>
+      <button class="btn-primary" id="finishBtn">Finish</button>
+    </div>`;
+  } else if(state.step===12){
+    html=`<div class="screen" style="text-align:center;">
+      <h2>Enjoy your journey!</h2>
+      <div style="font-size:21px;color:#0054A699;margin:25px;">Thank you!</div>
+    </div>`;
+  }
+  $flow.innerHTML=html;
+  switch(state.step){
+    case 0:
+      document.getElementById('langPickerBtn').onclick=function(){
+        showPickerWheel(state.language,lang=>{state.language=lang;render();});
+      };
+      document.getElementById('langNextBtn').onclick=()=>{state.step++;render();};break;
+    case 1: document.getElementById('docNextBtn').onclick=()=>{state.step++;render();};break;
+    case 2:
+      document.getElementById('passportNextBtn').onclick=()=>{
+        state.passport=document.getElementById('passportInput').value;
+        state.traveler.passport=state.passport;state.step++;render();
+      };
+      if(document.getElementById('qrbtn')){
+        document.getElementById('qrbtn').onclick=function(){
+          showQrModal(code=>{
+            state.passport = code;
+            state.qrData = code;
+            render();
+            setTimeout(()=>{document.getElementById('passportInput').value=state.passport;},100);
+          });
+        }
+      }
+      break;
+    case 3: document.getElementById('travelerNextBtn').onclick=()=>{
+      state.traveler.name=document.getElementById('travelerName').value;
+      state.traveler.address=document.getElementById('travelerAddress').value;
+      state.traveler.email=document.getElementById('travelerEmail').value;
+      state.traveler.passport=document.getElementById('travelerPassport').value;
+      state.step++;render();};break;
+    case 4: 
+      document.getElementById('datePickerBtn').onclick=function(){
+        showDatePicker(state.residence.departure,date=>{state.residence.departure=date;render();});
+      };
+      document.getElementById('residenceNextBtn').onclick=()=>{
+        state.residence.country=document.getElementById('residenceCountry').value;
+        state.step++;render();
+      };break;
+    case 5:
+      document.getElementById('membershipJoinBtn').onclick=()=>{state.memberEmail=document.getElementById('memberEmail').value;state.step++;render();};
+      document.getElementById('membershipSkipBtn').onclick=()=>{state.memberEmail="";state.step++;render();};break;
+    case 6:
+      if(document.getElementById('showMoreBtn')) {
+        document.getElementById('showMoreBtn').onclick=()=>{
+          state.receiptsShowAll = true; render();
+        };
+      }
+      document.getElementById('scanReceiptBtn').onclick=()=>{state.receipts.push({number:''+(10000+Math.floor(Math.random()*90000)),amount:Math.floor(Math.random()*100+65),store:'NEWSTORE'});render();};
+      document.getElementById('receiptsNextBtn').onclick=()=>{state.receiptsShowAll = false; state.step++;render();};break;
+    case 7:
+      document.getElementById('refundCCBtn').onclick=()=>{state.refund='Credit Card';state.step++;render();};
+      document.getElementById('refundWalletBtn').onclick=()=>{state.refund='Digital Wallet';state.step++;render();};
+      document.getElementById('refundCashBtn').onclick=()=>{state.refund='Cash';state.step++;render();};break;
+    case 8: document.getElementById('refundNextBtn').onclick=()=>{state.step++;render();};break;
+    case 9:
+      document.getElementById('agreeCheck').onchange=e=>{state.agreed = e.target.checked;}
+      document.getElementById('showTermsLink').onclick=e=>{e.preventDefault();showPopup("Terms & Conditions","Standard T&C.<br/>For demo purposes.");};
+      document.getElementById('showDeclarationLink').onclick=e=>{e.preventDefault();showPopup("Traveler Declaration","I confirm I'm not an EU resident, am above 16, and purchases will leave the EU.");};
+      document.getElementById('submitBtn').onclick=()=>{if(!state.agreed)return alert("Please accept the Terms & Conditions and Traveler Declaration.");state.step=11;render();};break;
+    case 10:
+      document.getElementById('approveBtn').onclick=()=>{state.assistantApproved=true;state.step=11;render();};
+      document.getElementById('rejectBtn').onclick=()=>{state.assistantApproved=false;state.step=0;render();};break;
+    case 11:document.getElementById('finishBtn').onclick=()=>{state.step=12;render();};break;
+  }
+
+  // Video: try to play() programmatically after render. For iOS/Safari you must interact first!
+  setTimeout(() => {
+    document.querySelectorAll("video[autoplay]").forEach(v => {
+      try { v.play(); }catch(e){}
+    });
+  },300);
+}
+render();
   </script>
 </body>
 </html>
