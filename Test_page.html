@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Local Grey Kiosk Demo (Fixes, Responsive, QR, UI)</title>
+  <title>Local Grey Kiosk (Responsive, QR, Receipts Limited)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -88,6 +88,10 @@
       background: #fff; border-radius: 13px; box-shadow: 0 1px 6px #0054A622;
       padding: 12px 17px; margin-bottom: 9px; display:flex;justify-content:space-between; align-items:center;font-size:1.09rem;
     }
+    .show-more-receipts { 
+      color:#0054A6; background:transparent; border:none; font-weight:600; font-size:1.07rem;
+      text-align:left; margin:9px 0 0 0; cursor:pointer; width:100%; padding:6px 0 14px 4px;
+    }
     /* Modal overlays - always on top */
     .modal-bg,.overlay {background:rgba(0,50,140,.13);position:fixed;top:0;left:0;right:0;bottom:0;z-index: 10010;}
     .popup,.modal,.picker-modal,.qr-modal,.date-modal {
@@ -98,14 +102,11 @@
       min-height:120px;
     }
     .popup h3, .modal h3 {margin-top:0;}
-
-    /* QR & picker modal style: override html5-qrcode defaults & iOS pickers */
     #reader>video, .qr-modal video { border-radius: 14px !important;}
     .qr-close {background:#0054A6;color:#fff;border:none;border-radius:9px;font-size:1.21em;font-weight:700;padding:11px 37px;margin-top:18px;cursor:pointer;margin-bottom:0;}
     .qr-close:hover {background:#003366;}
-    /* Stepper: Center blocks on wide */
     @media (min-width:1000px){
-      .app-container{max-width:928px;}
+      .app-container{max-width: 928px;}
       .screen {padding:48px 110px 32px 110px;}
       .card {margin:0 0 36px 0;}
     }
@@ -149,7 +150,8 @@ const state = {
   refund: "",
   agreed: false,
   needAssistant: false,
-  assistantApproved: false
+  assistantApproved: false,
+  receiptsShowAll: false
 };
 const languages = ["English","Mandarin","Hindi","Spanish","French","Arabic","Bengali","Russian","Portuguese","Urdu","Indonesian","German","Japanese","Swahili","Marathi","Telugu","Turkish","Korean","Vietnamese","Italian"];
 function showPickerWheel(current, callback) {
@@ -296,7 +298,7 @@ function render() {
   } else if(state.step===2){
     html=`<div class="screen">
       <h2>Passport/ID Scanning</h2>
-      <video controls poster="https://assets-global.blue.com/videos/passport-scan.jpg">
+      <video controls poster="https://dummyimage.com/600x200/cccccc/222222&text=Passport+Scan">
         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
       </video>
       <div class="input-row" style="margin-top:18px;">
@@ -337,11 +339,14 @@ function render() {
       <button class="btn-secondary" id="membershipSkipBtn">Skip</button>
     </div>`;
   } else if(state.step===6){
+    let N = state.receiptsShowAll ? state.receipts.length : 3;
+    let hasMore = state.receipts.length > N;
     html=`<div class="screen">
       <h2>Your Receipts</h2>
       <div class="receipt-list" id="receiptsList">
-        ${state.receipts.map((r,i)=>`<div class="receipt"><span>Receipt #${r.number}, €${r.amount}, Store: ${r.store}</span>
+        ${state.receipts.slice(0,N).map((r,i)=>`<div class="receipt"><span>Receipt #${r.number}, €${r.amount}, Store: ${r.store}</span>
         <button class="btn-secondary" style="width:auto;padding:4px 12px" onclick="window.showReceipt(${i})">View</button></div>`).join('')}
+        ${hasMore&&!state.receiptsShowAll?`<button class="show-more-receipts" id="showMoreBtn">Show all receipts (${state.receipts.length})</button>`:""}
       </div>
       <button class="btn-secondary" id="scanReceiptBtn">Scan New Receipt</button>
       <button class="btn-primary" id="receiptsNextBtn">Next</button>
@@ -356,7 +361,7 @@ function render() {
   } else if(state.step===8){
     html=`<div class="screen">
       <h2>Refund Instructions</h2>
-      <video controls poster="https://assets-global.blue.com/videos/payment.jpg" style="margin-bottom:9px;">
+      <video controls poster="https://dummyimage.com/600x200/cccccc/222222&text=Refund+Instructions">
         <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4"/>
       </video>
       <p>Refund by: <b>${state.refund||''}</b>. Please follow on-screen instructions to register your ${state.refund.toLowerCase()} for refund.</p>
@@ -383,7 +388,7 @@ function render() {
   } else if(state.step===11){
     html=`<div class="screen">
       <h2>Collect your Tax Free Form</h2>
-      <video controls poster="https://assets-global.blue.com/videos/taxfree_form.jpg">
+      <video controls poster="https://dummyimage.com/600x200/cccccc/222222&text=Tax+Free+Form">
         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
       </video>
       <div class="card">Remember to complete Customs validation at departure!</div>
@@ -437,8 +442,13 @@ function render() {
       document.getElementById('membershipJoinBtn').onclick=()=>{state.memberEmail=document.getElementById('memberEmail').value;state.step++;render();};
       document.getElementById('membershipSkipBtn').onclick=()=>{state.memberEmail="";state.step++;render();};break;
     case 6:
+      if(document.getElementById('showMoreBtn')) {
+        document.getElementById('showMoreBtn').onclick=()=>{
+          state.receiptsShowAll = true; render();
+        };
+      }
       document.getElementById('scanReceiptBtn').onclick=()=>{state.receipts.push({number:''+(10000+Math.floor(Math.random()*90000)),amount:Math.floor(Math.random()*100+65),store:'NEWSTORE'});render();};
-      document.getElementById('receiptsNextBtn').onclick=()=>{state.step++;render();};break;
+      document.getElementById('receiptsNextBtn').onclick=()=>{state.receiptsShowAll = false; state.step++;render();};break;
     case 7:
       document.getElementById('refundCCBtn').onclick=()=>{state.refund='Credit Card';state.step++;render();};
       document.getElementById('refundWalletBtn').onclick=()=>{state.refund='Digital Wallet';state.step++;render();};
