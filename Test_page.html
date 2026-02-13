@@ -1,133 +1,135 @@
-             <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>iOS Wheel Picker - Vanilla JS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Grey Kiosk Demo (Issue Flow with iOS Pickers)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    html,body { background: #ececec; }
-    body { font-family: 'SF Pro Display', Arial, sans-serif; }
-    .container { max-width: 400px; margin: 60px auto; padding: 22px 18px; background: #fff; border-radius: 18px; box-shadow: 0 6px 32px #0054A644; }
-    .header { background: #555a62; color: #fff; font-size: 2rem; font-weight: 700; letter-spacing: .02em; padding: 24px; border-radius: 18px 18px 0 0; margin: -22px -18px 24px -18px; }
-    .picker-label { font-weight: 600; color: #0054A6; margin: 14px 0 14px 1px;}
-    .picker-input {
-      padding: 14px 16px;
-      border-radius: 18px;
+    :root {
+      --blue: #0054A6;
+      --local-grey: #555A62;
+      --lightblue: #e6f0fa;
+      --gray: #f4f6f9;
+      --radius: 18px;
+    }
+    html, body { background: var(--gray);}
+    body { font-family: "SF Pro Display", Arial, sans-serif; color: #222A32; margin: 0;}
+    .app-container { max-width: 432px; margin: 40px auto; background: white; border-radius: var(--radius); box-shadow: 0 6px 32px #0054a644, 0 1.5px 4px #555a6211;}
+    .app-header { background: var(--local-grey); color: white; padding: 26px; text-align: center; font-size: 2rem; font-weight: bold; letter-spacing: 0.02em; border-radius: 18px 18px 0 0;}
+    .screen { padding: 36px 28px; min-height: 430px;}
+    h2 { margin-top: 0; font-size: 1.58rem; color: var(--blue); font-weight: 700;}
+    .card { background: var(--lightblue); border-radius: var(--radius); padding: 16px 18px; margin: 22px 0; font-size: 1.06rem;}
+    ul { padding-left: 22px; margin-top: 0; margin-bottom: 12px;}
+    label { font-weight: 600; color: #144169; margin-top:0.6em; display: block;}
+    input, select, textarea {
+      width: 100%;
+      margin-bottom: 17px;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      padding: 15px;
       border: 1.5px solid #B0C6E8;
-      font-size: 1.2em;
-      background: #f4f6f9;
-      cursor: pointer;
-      text-align: left;
-      user-select: none;
-    }
-    .modal-bg {
-      background: rgba(0,0,0,0.24);
-      position: fixed; inset: 0; z-index: 99;
-    }
-    .picker-modal {
-      position: fixed;
-      left: 50%; top: 50%;
-      transform: translate(-50%,-50%);
-      z-index: 100;
       background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0,80,165,0.24);
-      width: 350px;
-      max-width: 98vw;
-      padding: 0 0 16px 0;
-      display: flex; flex-direction: column; align-items: stretch;
-      animation: pickerpop .19s;
-    }
-    @keyframes pickerpop { 0%{opacity:.0;transform:scale(0.96) translate(-52%,-52%);} 100%{opacity:1;transform:scale(1) translate(-50%,-50%);} }
-    .picker-wheel-wrap {
-      flex:1 1 auto;
-      height: 248px;
-      overflow: hidden;
-      position: relative;
-      margin-top:0;
-    }
-    .picker-wheel {
-      height: 100%;
-      overflow-y: scroll;
-      overscroll-behavior: contain;
-      scroll-behavior: smooth;
-    }
-    .picker-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      min-height: 100%;
-    }
-    .picker-item {
-      height: 48px;
-      line-height: 48px;
-      font-size: 1.25rem;
-      text-align: center;
-      cursor: pointer;
-      color: #174699;
-      border-radius: 10px;
-      user-select: none;
-      transition: background .16s, color .16s;
-      margin: 0 18px;
-    }
-    .picker-item.selected {
-      background: #0054A6;
-      color: #fff;
-      font-weight: bold;
-    }
-    .picker-highlight {
-      position: absolute;
-      left: 0; right: 0;
-      top: 100px;
-      height: 48px;
-      border-radius: 12px;
-      pointer-events: none;
-      border: 2px solid #0054A6;
       box-sizing: border-box;
-      background: rgba(0,84,166, 0.06);
-      z-index: 9;
     }
-    .picker-actions {
-      padding: 18px 28px 0 28px;
-      display: flex; justify-content: flex-end; align-items: center;
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue); background: var(--lightblue); outline: none;
     }
-    .picker-close {
-      font-size: 1.09rem;
-      background: #555a62;
-      color: #fff;
+    textarea { min-height: 80px;}
+    .btn-primary {
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      padding: 14px 0;
       border: none;
-      border-radius: 11px;
-      padding: 9px 28px;
+      border-radius: var(--radius);
+      font-size: 1.18rem;
+      font-weight: 700;
+      margin-top: 17px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px #0054a622;
       cursor: pointer;
-      font-weight: 600;
-      margin-left: 4px;
-      transition: background .2s;
+      transition: background .13s;
     }
+    .btn-primary:active { background: #003366; }
+    .btn-secondary {
+      background: var(--gray); color: var(--blue); border: 1.5px solid #B0C6E8;
+      font-weight: 600; padding: 14px 0; width: 100%;
+      border-radius: var(--radius); margin-bottom: 8px; cursor: pointer;
+    }
+    .receipt-list { background: var(--gray); margin-bottom: 16px; border-radius: var(--radius); padding: 12px 5px;}
+    .receipt { background: #fff; border-radius: var(--radius); box-shadow: 0 1px 6px #0054A622; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 1.02rem;}
+    .popup, .modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; background: #fff; border-radius: var(--radius); box-shadow: 0 6px 32px #0054A644; padding: 20px; transform: translate(-50%, -50%); z-index: 100; animation: modalIn .18s; }
+    @keyframes modalIn { 0% { opacity: 0; transform:scale(0.96) translate(-50%,-50%);} 100% {opacity: 1;transform:scale(1) translate(-50%,-50%);} }
+    .overlay, .modal-bg { background: #0054A622; position: fixed; inset: 0; z-index: 99;}
+    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 1.04rem; margin-bottom: 14px;}
+    input[type="checkbox"] { width: 22px; height: 22px; margin: 0; accent-color: var(--blue);}
+    video { width: 100%; border-radius: var(--radius); background: var(--gray); margin-bottom: 18px; display: block;}
+    .picker-label { font-weight: 600; color: var(--blue); margin-bottom: 10px; margin-top: 14px; display: block;}
+    .picker-input { font-size: 1.16rem; border-radius: var(--radius); padding: 16px; border: 1.5px solid #B0C6E8; background: var(--gray); cursor: pointer; text-align: left; color: #222; margin-bottom: 21px; margin-top: 6px; transition: border 0.15s; user-select: none;}
+    .picker-input:active, .picker-input:focus { border-color: #0054A6; }
+    .picker-modal { position: fixed; top: 50%; left: 50%; width: 350px; max-width: 96vw; padding: 0 0 16px 0; background: #fff; border-radius: var(--radius); box-shadow: 0 6px 32px #0054A684; transform: translate(-50%, -50%); z-index: 100; display: flex; flex-direction: column; align-items: stretch; animation: modalIn .19s;}
+    .picker-wheel-wrap { flex: 1 1 auto; height: 248px; overflow: hidden; position: relative; margin-top:0;}
+    .picker-wheel { height: 100%; overflow-y: scroll; overscroll-behavior: contain; scroll-behavior: smooth;}
+    .picker-list { margin: 0; padding: 0; list-style: none; min-height: 100%;}
+    .picker-item { height: 48px; line-height: 48px; font-size: 1.22rem; text-align: center; cursor: pointer; color: #174699; border-radius: 10px; user-select: none; transition: background .16s, color .16s; margin: 0 18px;}
+    .picker-item.selected { background: #0054A6; color: #fff; font-weight: bold;}
+    .picker-highlight { position: absolute; left: 0; right: 0; top: 100px; height: 48px; border-radius: 12px; pointer-events: none; border: 2px solid #0054A6; box-sizing: border-box; background: rgba(0,84,166, 0.06); z-index: 9;}
+    .picker-actions { padding: 18px 28px 0 28px; display: flex; justify-content: flex-end; align-items: center;}
+    .picker-close { font-size: 1.09rem; background: #555a62; color: #fff; border: none; border-radius: 11px; padding: 9px 28px; cursor: pointer; font-weight: 600; margin-left: 4px; transition: background .2s;}
     .picker-close:hover { background: #003366; }
-    @media (max-width:430px) { .picker-modal { width:99vw;} }
+    @media (max-width:430px) { .picker-modal, .modal {width:98vw;} }
+    .linkbtn { color: #0054A6 !important; text-decoration: underline; font-weight: 500; background:none; border:0; cursor:pointer; font-size:1em; padding:0;}
+    /* iOS Date picker style */
+    .date-modal { position: fixed; left:50%; top:50%; width: 350px; max-width:96vw; background: #fff; border-radius:20px; box-shadow:0 8px 32px rgba(0,80,165,0.24); padding:20px 0 16px 0; transform:translate(-50%,-50%); z-index:101; display:flex; flex-direction:column; animation: pickerpop .19s;}
+    @keyframes pickerpop { 0%{opacity:.0;transform:scale(0.96) translate(-52%,-52%);} 100%{opacity:1;transform:scale(1) translate(-50%,-50%);} }
+    .date-wheel-row { display:flex; align-items: stretch; justify-content:center; gap:16px; margin-bottom:0;}
+    .date-wheel-col { flex:1 1 0; min-width:80px; position:relative;}
+    .date-wheel-wrap { height: 160px; overflow:hidden; position:relative;}
+    .date-wheel { height:100%; overflow-y:scroll; scroll-behavior:smooth; }
+    .date-item { height: 40px; line-height:40px; text-align:center; font-size:1.17em; color:#174699; background:#fff; cursor:pointer; transition:background .14s, color .14s; margin:0 6px; border-radius:10px;}
+    .date-item.selected { background: #0054A6; color:#fff; font-weight:bold;}
+    .date-highlight { position:absolute; left:0;right:0;top:60px;height:40px; border-radius:8px; pointer-events: none; border:2px solid #0054A6; background:rgba(0,84,166,0.06);z-index:9;}
+    .date-actions { padding:12px 20px 0 20px; text-align:right;}
+    .date-close { font-size:1.06em; background:#555a62; color:#fff; border-radius:8px; border:none; padding:8px 22px; cursor:pointer;}
+    .date-close:hover {background:#003366;}
+    @media (max-width:430px){.date-modal{width:98vw;} .date-wheel-row{gap:5px;}}
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">Local Grey</div>
-  <label class="picker-label">Select your language</label>
-  <div id="langPickerInput" class="picker-input" tabindex="0">English</div>
+<div class="app-container">
+  <div class="app-header">Local Grey</div>
+  <div id="flow"></div>
 </div>
+<!-- Modal backgrounds for popups/pickers -->
 <div id="modalBg" class="modal-bg" style="display:none"></div>
 <script>
+/* --- App State --- */
+const state = {
+  step: 0,
+  language: "English",
+  passport: "",
+  traveler: { name: "", address: "", email: "", passport: "" },
+  residence: { country: "", departure: "" },
+  memberEmail: "",
+  receipts: [ {number: '12345', amount: 150, store: 'PRINTEMPS'} ],
+  refund: "",
+  agreed: false,
+  needAssistant: false,
+  assistantApproved: false
+};
+
+/* --- Language Picker Wheel --- */
 const languages = [
   "English", "Mandarin", "Hindi", "Spanish", "French",
   "Arabic", "Bengali", "Russian", "Portuguese", "Urdu",
   "Indonesian", "German", "Japanese", "Swahili", "Marathi",
   "Telugu", "Turkish", "Korean", "Vietnamese", "Italian"
 ];
-let selectedIdx = 0;
-
-const langPickerInput = document.getElementById('langPickerInput');
-const modalBg = document.getElementById('modalBg');
-
-function showPicker() {
-  modalBg.style.display="block";
+function showPickerWheel(current, callback) {
+  const modalBg = document.getElementById("modalBg");
+  modalBg.style.display = "block";
+  let selectedIdx = languages.indexOf(current);
+  if (selectedIdx < 0) selectedIdx = 0;
   const modal = document.createElement('div');
   modal.className = "picker-modal";
   modal.innerHTML = `
@@ -146,126 +148,448 @@ function showPicker() {
     </div>
   `;
   document.body.appendChild(modal);
-
-  const list = modal.querySelector('.picker-list');
   const items = modal.querySelectorAll('.picker-item');
   const wheel = modal.querySelector('.picker-wheel');
-  // Constants
   const itemHeight = 48;
-  const visibleCount = 5; // 2 above,1 selected,2 below
-
-  // Scroll to initial selected
-  setTimeout(() => {
-    wheel.scrollTop = (selectedIdx)*itemHeight;
-    updateHighlight();
-  },35);
-
-  // Helper: highlight
-  function updateHighlight(focus, snap) {
-    let offset = Math.round(wheel.scrollTop / itemHeight);
-    if (offset<0) offset=0;
-    if (offset>languages.length-1) offset=languages.length-1;
+  setTimeout(() => { wheel.scrollTop = (selectedIdx)*itemHeight; highlight(); },30);
+  function highlight(focus, snap) {
+    let offset = Math.round(wheel.scrollTop/itemHeight);
+    if(offset<0) offset=0; if(offset>languages.length-1) offset=languages.length-1;
     items.forEach((it,i)=> it.classList.toggle('selected', i===offset));
-    if(typeof snap==="undefined"||snap){
-      wheel.scrollTo({top: offset*itemHeight, behavior:'smooth'});
-    }
-    if(typeof focus!=='undefined' && focus) items[offset].focus();
+    if(typeof snap==="undefined"||snap) wheel.scrollTo({top:offset*itemHeight,behavior:'smooth'});
+    if(focus) items[offset].focus();
   }
-
-  // Scroll snap logic (like iOS)
-  let isTouching = false, lastTouchY = null, lastTouchTime=null, vel=0, momentumFrame=null;
-  wheel.addEventListener('touchstart', (e)=>{
-    isTouching = true; vel = 0; if(momentumFrame) cancelAnimationFrame(momentumFrame);
-    lastTouchY = e.touches[0].clientY; lastTouchTime=Date.now();
-  });
-  wheel.addEventListener('touchmove', (e)=>{
-    let y = e.touches[0].clientY;
-    let dy = y - lastTouchY;
-    let dt = Date.now()-lastTouchTime;
-    vel = dy/dt*16; // Velocity in px/ms normalized to 60Hz
-    lastTouchY = y; lastTouchTime=Date.now();
-  });
-  wheel.addEventListener('touchend', ()=>{
-    isTouching = false;
-    // Momentum
-    let spd = vel*16; // px per frame
-    function momentum() {
-      if(Math.abs(spd)>2) {
-        wheel.scrollTop -= spd;
-        spd *= 0.94;
-        momentumFrame = requestAnimationFrame(momentum);
-        updateHighlight();
-      } else {
-        // Snap to item
-        let idx = Math.round(wheel.scrollTop/itemHeight);
-        wheel.scrollTo({top: idx*itemHeight, behavior:'smooth'});
-        updateHighlight(true);
-      }
-    }
-    momentum();
-  });
-  // Mouse wheel: smooth snap
+  let isTouching = false, lastTouchY = null, vel=0, momentumFrame=null;
+  wheel.addEventListener('touchstart', (e)=>{ isTouching=true; vel=0; if(momentumFrame) cancelAnimationFrame(momentumFrame); lastTouchY=e.touches[0].clientY; });
+  wheel.addEventListener('touchmove', (e)=>{ let y=e.touches[0].clientY; let dy=y-lastTouchY; vel=dy/16; lastTouchY=y;});
+  wheel.addEventListener('touchend', ()=>{isTouching=false; let spd=vel*18; function mom(){if(Math.abs(spd)>2){wheel.scrollTop-=spd; spd*=.94;momentumFrame=requestAnimationFrame(mom); highlight();} else {let idx=Math.round(wheel.scrollTop/itemHeight); wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(true);} } mom();});
   let wheelTimeout=null;
   wheel.addEventListener('wheel', e=>{
     if(wheelTimeout) clearTimeout(wheelTimeout);
-    wheelTimeout = setTimeout(()=>{
-      let idx = Math.round(wheel.scrollTop/itemHeight);
-      wheel.scrollTo({top: idx*itemHeight, behavior:'smooth'});
-      updateHighlight(true);
-    },80);
-    setTimeout(updateHighlight,18);
+    wheelTimeout = setTimeout(()=>{let idx=Math.round(wheel.scrollTop/itemHeight); wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'}); highlight(true);},80);
+    setTimeout(highlight,16);
   });
-
-  // Keyboard nav
   modal.addEventListener('keydown', (e)=>{
     let idx = Array.from(items).findIndex(it=>it.classList.contains('selected'));
-    if(e.key==='ArrowDown'||e.key==='Down'){if(idx<languages.length-1){ idx++; scrollToIdx(idx);} e.preventDefault();}
-    else if(e.key==='ArrowUp'||e.key==='Up'){if(idx>0){ idx--; scrollToIdx(idx);} e.preventDefault();}
-    else if(e.key==='Enter'||e.key==='" '||e.key===" "){ selectIdx(idx); }
-    else if(e.key==='Escape'){closePicker();}
+    if(e.key==='ArrowDown'){if(idx<languages.length-1){ idx++; scrollToIdx(idx);} e.preventDefault();}
+    else if(e.key==='ArrowUp'){if(idx>0){ idx--; scrollToIdx(idx);} e.preventDefault();}
+    else if(e.key==='Enter'){ selectIdx(idx);}
+    else if(e.key==='Escape'){close();}
   });
-
-  // Click item selection
-  list.addEventListener('click', e=>{
-    if(e.target.classList.contains('picker-item')) {
-      let idx = Number(e.target.dataset.idx);
-      selectIdx(idx);
-    }
-  });
-  // Snap and highlight on scroll
-  wheel.addEventListener('scroll', ()=>{
-    if(isTouching) return;
-    updateHighlight();
-  });
-  // Snap on scroll end (fallback)
+  function scrollToIdx(idx) { wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'}); highlight(true);}
+  function selectIdx(idx){
+    callback(languages[idx]); close();
+  }
+  modal.querySelector('.picker-list').onclick = e=>{
+    if(e.target.classList.contains('picker-item')) selectIdx(Number(e.target.dataset.idx));
+  }
+  wheel.addEventListener('scroll', ()=>{ if(!isTouching) highlight(); });
   let lastScroll=-1000;
   wheel.addEventListener('scroll', ()=>{
     lastScroll=Date.now();
-    setTimeout(()=>{if(Date.now()-lastScroll>85){updateHighlight(true);}},90);
+    setTimeout(()=>{if(Date.now()-lastScroll>88){highlight(true);}},89);
   });
-
-  // Helper fns
-  function scrollToIdx(idx) {
-    wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});
-    updateHighlight(true);
-  }
-  function selectIdx(idx) {
-    selectedIdx=idx;
-    langPickerInput.textContent=languages[idx];
-    closePicker();
-  }
-  // Close logic
-  function closePicker() {
-    document.body.removeChild(modal);
-    modalBg.style.display="none";
-    langPickerInput.focus();
-  }
-  // Close btn & bg
-  modal.querySelector('.picker-close').onclick=closePicker;
-  modalBg.onclick=closePicker;
+  modal.querySelector('.picker-close').onclick = close;
+  modalBg.onclick = close;
+  function close(){ document.body.removeChild(modal); modalBg.style.display="none";document.getElementById('langPickerField').focus(); }
 }
-langPickerInput.onclick = showPicker;
-langPickerInput.onkeydown = (e)=>{ if(e.key==='Enter'||e.key===' ') showPicker(); }
+
+/* --- iOS-style Date Picker Wheel --- */
+function showDatePicker(current, callback) {
+  const modalBg = document.getElementById("modalBg");
+  modalBg.style.display = "block";
+  // Date data: yyyy-mm-dd
+  let now = new Date();
+  let val = current?.split('-')||[];
+  let y = Number(val[0])||now.getFullYear();
+  let m = Number(val[1])||now.getMonth()+1;
+  let d = Number(val[2])||now.getDate();
+  let years=[],months=[],days=[];
+  for(let i=now.getFullYear()-1;i<=now.getFullYear()+3;i++) years.push(i);
+  for(let i=1;i<=12;i++) months.push(i);
+  // for day wheel, update function
+  function updateDays(yy,mm) {
+    let lastDay = new Date(yy,mm,0).getDate();
+    days = [];
+    for(let i=1;i<=lastDay;i++) days.push(i);
+  }
+  updateDays(y, m);
+  // HTML:
+  const modal = document.createElement('div');
+  modal.className = "date-modal";
+  modal.innerHTML = `
+    <div class="date-wheel-row">
+      <div class="date-wheel-col" id="yearCol">
+        <div class="date-wheel-wrap"><div class="date-highlight"></div>
+        <div class="date-wheel"><ul class="date-years">
+          ${years.map(yy=>`<li class="date-item${yy===y?' selected':''}" data-val="${yy}">${yy}</li>`).join('')}
+        </ul></div></div>
+      </div>
+      <div class="date-wheel-col" id="monthCol">
+        <div class="date-wheel-wrap"><div class="date-highlight"></div>
+        <div class="date-wheel"><ul class="date-months">
+          ${months.map(mm=>`<li class="date-item${mm===m?' selected':''}" data-val="${mm}">${String(mm).padStart(2,'0')}</li>`).join('')}
+        </ul></div></div>
+      </div>
+      <div class="date-wheel-col" id="dayCol">
+        <div class="date-wheel-wrap"><div class="date-highlight"></div>
+        <div class="date-wheel"><ul class="date-days">
+          ${days.map(dd=>`<li class="date-item${dd===d?' selected':''}" data-val="${dd}">${String(dd).padStart(2,'0')}</li>`).join('')}
+        </ul></div></div>
+      </div>
+    </div>
+    <div class="date-actions">
+      <button class="date-close">Close</button>
+      <button class="btn-primary" id="dateSelectBtn">Select</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  // Scroll/selection per wheel
+  const yearsList = modal.querySelector('.date-years'), monthsList = modal.querySelector('.date-months'), daysList = modal.querySelector('.date-days');
+  const wheels = modal.querySelectorAll('.date-wheel');
+  const itemHeight = 40;
+  function snapWheel(list, arr, val) {
+    let idx = arr.indexOf(val);
+    if(idx<0) idx=0;
+    wheels.forEach((wheel, wi) => {
+      if(list===wheel.querySelector('ul')) wheel.scrollTop = idx*itemHeight;
+    });
+    highlight(list, arr, val);
+  }
+  function highlight(list, arr, val) {
+    let idx = Math.round(((list.parentElement.parentElement.querySelector('.date-wheel').scrollTop)/itemHeight));
+    if(idx<0) idx=0; if(idx>arr.length-1) idx=arr.length-1;
+    Array.from(list.children).forEach((li, i)=>li.classList.toggle('selected', i===idx));
+  }
+  // Snap to initial values
+  setTimeout(() => { snapWheel(yearsList, years, y); snapWheel(monthsList, months, m); snapWheel(daysList, days, d); },30);
+  // Enable wheel snapping, scroll, momentum per column
+  ['years','months','days'].forEach((what, wi)=>{
+    const arr = what==='years'?years:what==='months'?months:days;
+    const list = modal.querySelector('.date-'+what);
+    const wheel = list.parentElement.parentElement.querySelector('.date-wheel');
+    let isTouching=false, lastY=null, vel=0, momentumFrame=null;
+    wheel.addEventListener('touchstart',e=>{isTouching=true; vel=0;if(momentumFrame)cancelAnimationFrame(momentumFrame); lastY=e.touches[0].clientY;});
+    wheel.addEventListener('touchmove',e=>{let y=e.touches[0].clientY;let dy=y-lastY;vel=dy/16;lastY=y;});
+    wheel.addEventListener('touchend',()=>{isTouching=false; let spd=vel*18;function mom(){if(Math.abs(spd)>2){wheel.scrollTop-=spd;spd*=.92;momentumFrame=requestAnimationFrame(mom); highlight(list, arr, arr[Math.round(wheel.scrollTop/itemHeight)]);}else{let idx=Math.round(wheel.scrollTop/itemHeight);wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(list, arr, arr[idx]);}}mom();});
+    wheel.addEventListener('scroll',()=>{if(!isTouching)highlight(list,arr,arr[Math.round(wheel.scrollTop/itemHeight)]);});
+    let wheelTimeout=null;
+    wheel.addEventListener('wheel',e=>{if(wheelTimeout)clearTimeout(wheelTimeout);wheelTimeout=setTimeout(()=>{let idx=Math.round(wheel.scrollTop/itemHeight);wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(list,arr,arr[idx]);},80);});
+    list.onclick = e=>{if(e.target.classList.contains('date-item')){let idx=Array.from(list.children).indexOf(e.target);wheel.scrollTo({top:idx*itemHeight,behavior:'smooth'});highlight(list,arr,arr[idx]);}};
+  });
+  // Update DAYS wheel on year/month change (for leap years/30/31 days!)
+  modal.querySelectorAll('.date-months .date-item,.date-years .date-item').forEach(it=>{
+    it.onclick = ()=>{
+      let idxY = Array.from(yearsList.children).findIndex(li=>li.classList.contains('selected'));
+      let idxM = Array.from(monthsList.children).findIndex(li=>li.classList.contains('selected'));
+      let yy = years[idxY], mm = months[idxM];
+      updateDays(yy,mm);
+      daysList.innerHTML = days.map(dd=>`<li class="date-item${dd===d?' selected':''}" data-val="${dd}">${String(dd).padStart(2,'0')}</li>`).join('');
+      snapWheel(daysList,days,days[0]);
+    }
+  });
+  // Choose event
+  modal.querySelector('#dateSelectBtn').onclick = ()=>{
+    // Gather picked values
+    let idxY = Array.from(yearsList.children).findIndex(li=>li.classList.contains('selected'));
+    let idxM = Array.from(monthsList.children).findIndex(li=>li.classList.contains('selected'));
+    let idxD = Array.from(daysList.children).findIndex(li=>li.classList.contains('selected'));
+    let yy = years[idxY], mm = months[idxM], dd = days[idxD];
+    let val = `${yy}-${String(mm).padStart(2,"0")}-${String(dd).padStart(2,"0")}`;
+    callback(val); close();
+  };
+  modal.querySelector('.date-close').onclick = close;
+  modalBg.onclick = close;
+  function close(){document.body.removeChild(modal); modalBg.style.display="none";}
+}
+
+/* --- PDF Step-by-step Flow --- */
+function render() {
+  const $flow = document.getElementById("flow");
+  $flow.innerHTML = "";
+  let html = '';
+  if (state.step === 0) {
+    html = `
+      <div>
+        <label class="picker-label">Select your language</label>
+        <div id="langPickerField" class="picker-input" tabindex="1">${state.language}</div>
+        <button class="btn-primary" id="langNextBtn">Next</button>
+      </div>
+    `;
+  } else if (state.step === 1) {
+    html = `
+      <div>
+        <h2>Have your documents ready</h2>
+        <div class="card">
+          <ul>
+            <li>Passport or ID</li>
+            <li>Sales Receipts</li>
+            <li>Credit Card or eWallet</li>
+          </ul>
+          <strong>Eligibility:</strong>
+          <ul>
+            <li>16 years old or older</li>
+            <li>Not a European Union resident</li>
+            <li>Get Customs validation within 3 months of issuance</li>
+          </ul>
+        </div>
+        <button class="btn-primary" id="docNextBtn">Next</button>
+      </div>
+    `;
+  } else if (state.step === 2) {
+    html = `
+      <div>
+        <h2>Passport/ID Scanning</h2>
+        <video controls poster="https://assets-global.blue.com/videos/passport-scan.jpg">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
+          Your browser does not support video.
+        </video>
+        <label>Type your Passport or ID number</label>
+        <input type="text" id="passportInput" value="${state.passport}" placeholder="Passport or ID Number"/>
+        <button class="btn-primary" id="passportNextBtn">Continue</button>
+      </div>
+    `;
+  } else if (state.step === 3) {
+    html = `
+      <div>
+        <h2>Traveler Information</h2>
+        <input id="travelerName" type="text" placeholder="Full Name" value="${state.traveler.name||''}"/>
+        <input id="travelerAddress" type="text" placeholder="Address" value="${state.traveler.address||''}"/>
+        <input id="travelerEmail" type="email" placeholder="Email" value="${state.traveler.email||''}"/>
+        <input id="travelerPassport" type="text" placeholder="Passport/ID Number" value="${state.traveler.passport||state.passport||''}"/>
+        <button class="btn-primary" id="travelerNextBtn">Next</button>
+      </div>
+    `;
+  } else if (state.step === 4) {
+    html = `
+      <div>
+        <h2>Residence & Departure</h2>
+        <label>
+          Country of Residence
+          <input id="residenceCountry" type="text" value="${state.residence.country||''}"/>
+        </label>
+        <label>
+          Departure Date
+          <div id="iosDateField" class="picker-input" tabindex="0">${state.residence.departure||'Select date...'}</div>
+        </label>
+        <button class="btn-primary" id="residenceNextBtn">Next</button>
+      </div>
+    `;
+  } else if (state.step === 5) {
+    html = `
+      <div>
+        <h2>Become a Member (optional)</h2>
+        <input id="memberEmail" type="email" placeholder="Email" value="${state.memberEmail||''}" />
+        <button class="btn-primary" id="membershipJoinBtn">Join</button>
+        <button class="btn-secondary" id="membershipSkipBtn">Skip</button>
+      </div>
+    `;
+  } else if (state.step === 6) {
+    html = `
+      <div>
+        <h2>Your Receipts</h2>
+        <div class="receipt-list" id="receiptsList">
+          ${state.receipts.map((r,i) => `
+            <div class="receipt">
+              <span>Receipt #${r.number}, €${r.amount}, Store: ${r.store}</span>
+              <button class="btn-secondary" style="width:auto;padding:4px 12px" onclick="window.showReceipt(${i})">View</button>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-secondary" id="scanReceiptBtn">Scan New Receipt</button>
+        <button class="btn-primary" id="receiptsNextBtn">Next</button>
+      </div>
+    `;
+  } else if (state.step === 7) {
+    html = `
+      <div>
+        <h2>Choose Refund Method</h2>
+        <button class="btn-primary" id="refundCCBtn">Credit Card</button>
+        <button class="btn-primary" id="refundWalletBtn">Digital Wallet</button>
+        <button class="btn-primary" id="refundCashBtn">Cash</button>
+      </div>
+    `;
+  } else if (state.step === 8) {
+    html = `
+      <div>
+        <h2>Refund Instructions</h2>
+        <video controls poster="https://assets-global.blue.com/videos/payment.jpg">
+          <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4"/>
+        </video>
+        <p>Refund by: <b>${state.refund}</b>. Please follow on-screen instructions to register your ${state.refund.toLowerCase()} for refund.</p>
+        <button class="btn-primary" id="refundNextBtn">Continue</button>
+      </div>
+    `;
+  } else if (state.step === 9) {
+    html = `
+      <div>
+        <h2>Summary & Traveler Declaration</h2>
+        <textarea readonly>${getSummaryText()}</textarea>
+        <label class="checkbox-label">
+          <input id="agreeCheck" type="checkbox" ${state.agreed?"checked":""}/>
+          I accept <button class="linkbtn" id="showTermsLink">Terms & Conditions</button> and <button class="linkbtn" id="showDeclarationLink">Traveler Declaration</button>
+        </label>
+        <button class="btn-primary" id="submitBtn">Submit</button>
+      </div>
+    `;
+  } else if (state.step === 10) {
+    html = `
+      <div>
+        <h2>Assistance Required</h2>
+        <p>A shop assistant will help you soon.</p>
+        <input id="assistantInput" type="text" placeholder="Scan assistant QR code"/>
+        <div style="display:flex;gap:12px;margin-top:22px;">
+          <button class="btn-primary" id="approveBtn" style="flex:1">Approve</button>
+          <button class="btn-secondary" id="rejectBtn" style="flex:1">Reject</button>
+        </div>
+      </div>
+    `;
+  } else if (state.step === 11) {
+    html = `
+      <div>
+        <h2>Collect your Tax Free Form</h2>
+        <video controls poster="https://assets-global.blue.com/videos/taxfree_form.jpg">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
+        </video>
+        <div class="card">
+          Remember to complete Customs validation at departure!
+        </div>
+        <button class="btn-primary" id="finishBtn">Finish</button>
+      </div>
+    `;
+  } else if (state.step === 12) {
+    html = `
+      <div style="text-align:center;margin-top:77px;">
+        <h2>Enjoy your journey!</h2>
+        <div style="font-size:20px;color:#0054A699;margin:22px;">Thank you!</div>
+      </div>
+    `;
+  }
+  $flow.innerHTML = html;
+
+  // Attach event listeners for each step
+  switch(state.step) {
+    case 0:
+      document.getElementById('langPickerField').onclick = function(){
+        showPickerWheel(state.language, lang => { state.language = lang; render(); });
+      };
+      document.getElementById('langPickerField').onkeydown = function(e){ if (e.key===' '||e.key==='Enter') showPickerWheel(state.language, lang => { state.language = lang; render(); }); }
+      document.getElementById('langNextBtn').onclick = () => { state.step++; render(); }
+      break;
+    case 1:
+      document.getElementById('docNextBtn').onclick = () => { state.step++; render(); }
+      break;
+    case 2:
+      document.getElementById('passportNextBtn').onclick = () => {
+        state.passport = document.getElementById('passportInput').value;
+        state.traveler.passport = state.passport;
+        state.step++; render();
+      }
+      break;
+    case 3:
+      document.getElementById('travelerNextBtn').onclick = () => {
+        state.traveler.name = document.getElementById('travelerName').value;
+        state.traveler.address = document.getElementById('travelerAddress').value;
+        state.traveler.email = document.getElementById('travelerEmail').value;
+        state.traveler.passport = document.getElementById('travelerPassport').value;
+        state.step++; render();
+      }
+      break;
+    case 4:
+      document.getElementById('residenceCountry').onchange = e => { state.residence.country = e.target.value;}
+      document.getElementById('iosDateField').onclick = function(){
+        showDatePicker(state.residence.departure, date => { state.residence.departure = date; render(); });
+      };
+      document.getElementById('iosDateField').onkeydown = function(e){ if (e.key===' '||e.key==='Enter') showDatePicker(state.residence.departure, date => { state.residence.departure = date; render(); });}
+      document.getElementById('residenceNextBtn').onclick = () => {
+        state.residence.country = document.getElementById('residenceCountry').value;
+        // get date from state.residence.departure
+        state.step++; render();
+      }
+      break;
+    case 5:
+      document.getElementById('membershipJoinBtn').onclick = () => { state.memberEmail = document.getElementById('memberEmail').value; state.step++; render(); }
+      document.getElementById('membershipSkipBtn').onclick = () => { state.memberEmail = ""; state.step++; render(); }
+      break;
+    case 6:
+      document.getElementById('scanReceiptBtn').onclick = () => {
+        state.receipts.push({ number: '' + (10000 + Math.floor(Math.random()*90000)), amount: Math.floor(Math.random()*100+65), store: 'NEWSTORE' });
+        render();
+      };
+      document.getElementById('receiptsNextBtn').onclick = () => { state.step++; render(); };
+      break;
+    case 7:
+      document.getElementById('refundCCBtn').onclick = () => { state.refund = 'Credit Card'; state.step++; render(); }
+      document.getElementById('refundWalletBtn').onclick = () => { state.refund = 'Digital Wallet'; state.step++; render(); }
+      document.getElementById('refundCashBtn').onclick = () => { state.refund = 'Cash'; state.step++; render(); }
+      break;
+    case 8:
+      document.getElementById('refundNextBtn').onclick = () => { state.step++; render();}
+      break;
+    case 9:
+      document.getElementById('agreeCheck').onchange = e => {state.agreed = e.target.checked;}
+      document.getElementById('showTermsLink').onclick = e =>{e.preventDefault(); showPopup("Terms & Conditions", "Standard T&C.<br/>For demo purposes.");};
+      document.getElementById('showDeclarationLink').onclick = e=>{e.preventDefault(); showPopup("Traveler Declaration","I confirm I'm not an EU resident, am above 16, and purchases will leave the EU.");};
+      document.getElementById('submitBtn').onclick = () => {
+        if(!document.getElementById('agreeCheck').checked) { alert("Please accept the Terms & Conditions and Traveler Declaration."); return;}
+        state.step=11; render();
+      };
+      break;
+    case 10:
+      document.getElementById('approveBtn').onclick = () => { state.assistantApproved=true; state.step=11; render(); }
+      document.getElementById('rejectBtn').onclick = () => { state.assistantApproved=false; state.step=0; render(); }
+      break;
+    case 11:
+      document.getElementById('finishBtn').onclick = () => { state.step=12; render();}
+      break;
+  }
+}
+function showPopup(title, html) {
+  const modalBg = document.getElementById("modalBg");
+  modalBg.style.display = "block";
+  const popup=document.createElement("div");
+  popup.className="popup";
+  popup.innerHTML = `<h3 style="margin-top:0">${title}</h3><div style="margin-bottom:24px">${html}</div><button class="btn-primary" id="closePopupBtn" style="margin-top:10px">Close</button>`;
+  document.body.appendChild(popup);
+  document.getElementById("closePopupBtn").onclick = close;
+  function close() { document.body.removeChild(popup); modalBg.style.display="none";}
+  modalBg.onclick = close;
+}
+window.showReceipt = function(i) {
+  const r = state.receipts[i];
+  const modalBg = document.getElementById("modalBg");
+  modalBg.style.display = "block";
+  const popup=document.createElement("div");
+  popup.className="popup";
+  popup.innerHTML = `
+    <h3 style="margin-top:0">Receipt #${r.number}</h3>
+    <table>
+      <tr><td>Store:</td><td>${r.store}</td></tr>
+      <tr><td>Amount:</td><td>€${r.amount}</td></tr>
+      <tr><td>Goods:</td><td>Example Goods</td></tr>
+      <tr><td>Quantity:</td><td>1</td></tr>
+    </table>
+    <button class="btn-primary" id="closeReceiptBtn" style="margin-top:18px">Close</button>
+  `;
+  document.body.appendChild(popup);
+  document.getElementById("closeReceiptBtn").onclick = close;
+  function close() {document.body.removeChild(popup); modalBg.style.display="none";}
+  modalBg.onclick = close;
+}
+function getSummaryText() {
+  return [
+    `Language: ${state.language}`,
+    `Name: ${state.traveler.name}`,
+    `Address: ${state.traveler.address}`,
+    `Email: ${state.traveler.email}`,
+    `Passport/ID: ${state.traveler.passport}`,
+    `Residence: ${state.residence.country}`,
+    `Departure: ${state.residence.departure}`,
+    `Refund: ${state.refund}`,
+    `Receipts: ${state.receipts.length}`
+  ].join('\n');
+}
+render();
 </script>
 </body>
 </html>
